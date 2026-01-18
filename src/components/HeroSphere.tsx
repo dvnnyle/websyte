@@ -34,8 +34,8 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
   const restitution = 0.45;
   const radiusFactor = 1.05;
   const DAMP_LAMBDA = 1.4;
-  const SCROLL_INTENSITY = 0.65;
-  const ROTATION_RESPONSE = 0.65;
+  const SCROLL_INTENSITY = 0.45;
+  const ROTATION_RESPONSE = 0.35;
 
   const fragments = useMemo<FragmentData[]>(() => {
     const frags: FragmentData[] = [];
