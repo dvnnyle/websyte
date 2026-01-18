@@ -364,7 +364,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
             />
           </mesh>
         ))}
-        <pointLight position={[0, 0, 0]} intensity={0.35} distance={0} decay={2} color="#ffffff" castShadow />
+        <pointLight position={[0, 0, 0]} intensity={0.35} distance={0} decay={2} color="#9c9c9c" castShadow />
       </group>
     </Float>
   );
@@ -374,11 +374,11 @@ const Scene = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => 
   return (
     <>
       <ambientLight intensity={0.18} />
-      <directionalLight position={[5, 6, 4]} intensity={0.65} color="#ffffff" castShadow />
-      <directionalLight position={[-4, -5, -6]} intensity={0.35} color="#ffffff" castShadow />
-      <pointLight position={[0.8, 0.5, 3]} intensity={0.06} color="#ffffff" />
-      <Cloud position={[0, 0, 0]} scale={[5, 5, 5]} opacity={0.08} speed={0.18} color="#aaaaaa" segments={28} />
+      <directionalLight position={[5, 6, 4]} intensity={0.65} color="#00000000" castShadow />
+      <directionalLight position={[-4, -5, -6]} intensity={0.35} color="#00000000" castShadow />
+      <Cloud position={[0, 0, 0]} scale={[5, 5, 5]} opacity={0.08} speed={0.18} color="#818181" segments={28} />
       <ExplodingSphere scrollRef={scrollRef} />
+      <pointLight position={[0, 0, 0]} intensity={0.35} distance={0} decay={2} color="#000000" castShadow />
     </>
   );
 };
