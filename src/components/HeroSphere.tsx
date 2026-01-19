@@ -1,6 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react'; // Grunnleggende React-hooks
 import { Canvas, useFrame } from '@react-three/fiber'; // Canvas og animasjonsloop (React Three Fiber)
-import { Float, Cloud, Html } from '@react-three/drei'; // Drei-hjelpere (Float, Cloud, Html)
+import { Float, Cloud } from '@react-three/drei'; // Drei-hjelpere (Float, Cloud)
 import * as THREE from 'three'; // Three.js kjerne
 
 
@@ -33,7 +33,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
   const cellSize = 0.9;
   const restitution = 0.45;
   const radiusFactor = 1.05;
-  const DAMP_LAMBDA = 1.4;
+  const DAMP_LAMBDA = 3.0; // Increased for more consistent, stable damping
   const SCROLL_INTENSITY = 0.45;
   const ROTATION_RESPONSE = 0.35;
 
@@ -177,34 +177,14 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
 
   const fragmentGeometry = useMemo(() => new THREE.IcosahedronGeometry(1, 0), []);
 
-  // Create simple 2D star shape
-  const starGeometry = useMemo(() => {
-    const shape = new THREE.Shape();
-    const outerRadius = 1;
-    const innerRadius = 0.2;
-    const points = 4;
-    
-    for (let i = 0; i < points * 2; i++) {
-      const angle = (i * Math.PI) / points;
-      const radius = i % 2 === 0 ? outerRadius : innerRadius;
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
-      if (i === 0) shape.moveTo(x, y);
-      else shape.lineTo(x, y);
-    }
-    shape.lineTo(outerRadius, 0);
-    
-    const geometry = new THREE.ShapeGeometry(shape);
-    return geometry;
-  }, []);
-
   const elasticOut = (t: number) => {
     const c4 = (2 * Math.PI) / 3;
     return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
   };
 
   useFrame((state, delta) => {
-    const dt = (typeof delta === 'number' ? delta : 0.016);
+    // Clamp delta to prevent inconsistent behavior during performance dips
+    const dt = Math.min(typeof delta === 'number' ? delta : 0.016, 0.1);
     const sp = THREE.MathUtils.damp(smoothProgressRef.current, scrollRef.current, DAMP_LAMBDA, dt);
     const spScaled = Math.min(1, sp * SCROLL_INTENSITY);
     smoothProgressRef.current = sp;
