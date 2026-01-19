@@ -1,6 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react'; // Grunnleggende React-hooks
 import { Canvas, useFrame } from '@react-three/fiber'; // Canvas og animasjonsloop (React Three Fiber)
-import { Float, Cloud } from '@react-three/drei'; // Drei-hjelpere (Float, Cloud)
+import { Float, Cloud, Html } from '@react-three/drei'; // Drei-hjelpere (Float, Cloud, Html)
 import * as THREE from 'three'; // Three.js kjerne
 
 
@@ -177,6 +177,28 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
 
   const fragmentGeometry = useMemo(() => new THREE.IcosahedronGeometry(1, 0), []);
 
+  // Create star geometry
+  const starGeometry = useMemo(() => {
+    const shape = new THREE.Shape();
+    const outerRadius = 1;
+    const innerRadius = 0.4;
+    const points = 4;
+    
+    for (let i = 0; i < points * 2; i++) {
+      const angle = (i * Math.PI) / points;
+      const radius = i % 2 === 0 ? outerRadius : innerRadius;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      if (i === 0) shape.moveTo(x, y);
+      else shape.lineTo(x, y);
+    }
+    shape.lineTo(outerRadius, 0);
+    
+    const geometry = new THREE.ShapeGeometry(shape);
+    geometry.rotateZ(Math.PI / 4);
+    return geometry;
+  }, []);
+
   const elasticOut = (t: number) => {
     const c4 = (2 * Math.PI) / 3;
     return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
@@ -330,14 +352,24 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
   });
 
   return (
-    <Float
-      speed={1.8}
-      rotationIntensity={0.5}
-      floatIntensity={1.0}
-      floatingRange={[-0.1, 0.1]}
-    >
-      <group ref={groupRef}>
-        {fragments.map((frag, i) => (
+    <>
+      {/* Static 3D Core star - completely static, no animations */}
+      <mesh position={[0, 0, 0]} geometry={starGeometry} scale={0.8} rotation={[0, 0, Math.PI / 4]}>
+        <meshStandardMaterial
+          color="#FFD700"
+          emissive="#FFD700"
+          emissiveIntensity={0.8}
+        />
+      </mesh>
+
+      <Float
+        speed={1.8}
+        rotationIntensity={0.5}
+        floatIntensity={1.0}
+        floatingRange={[-0.1, 0.1]}
+      >
+        <group ref={groupRef}>
+          {fragments.map((frag, i) => (
           <mesh
             key={i}
             ref={(el) => {
@@ -367,6 +399,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         <pointLight position={[0, 0, 0]} intensity={0.35} distance={0} decay={2} color="#9c9c9c" castShadow />
       </group>
     </Float>
+    </>
   );
 };
 

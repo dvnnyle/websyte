@@ -40,3 +40,171 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Footer Styles */
+.footer {
+  color: #e9e9e9;
+  padding: 0;
+  margin-top: auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: visible;
+  height: 60px;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.local-time {
+  position: absolute;
+  bottom: 25px;
+  left: 40px;
+  font-family: 'JetBrains Mono', monospace;
+  text-align: left;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.time-display {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.time-location {
+  font-size: 0.8rem;
+  color: white;
+  opacity: 0.7;
+  letter-spacing: 1px;
+  font-weight: 400;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.social-links {
+  position: absolute;
+  bottom: 25px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  pointer-events: auto;
+}
+
+.social-text {
+  color: white;
+  opacity: 0.7;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 400;
+  background: none;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer {
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .local-time {
+    bottom: 20px;
+    left: 30px;
+  }
+  
+  .social-links {
+    bottom: 20px;
+    right: 30px;
+  }
+}
+
+/* Experiment Page - Elongated Star */
+.experiment-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a23 0%, #1a1a3e 50%, #2a2a5e 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+.experiment-page h1 {
+  color: #FFD700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.star-container {
+  position: relative;
+  z-index: 10;
+}
+
+.elongated-star {
+  filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8));
+  animation: starPulse 4s ease-in-out infinite;
+}
+
+.star-field {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+@keyframes starPulse {
+  0%, 100% { 
+    filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8));
+    transform: scale(1);
+  }
+  50% { 
+    filter: drop-shadow(0 0 40px rgba(255, 230, 92, 1)) drop-shadow(0 0 80px rgba(255, 215, 0, 0.6));
+    transform: scale(1.02);
+  }
+}
+
+/* Subtle star particle animation */
+.star-field > div {
+  animation: floatStar 8s ease-in-out infinite;
+}
+
+.star-field > div:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.star-field > div:nth-child(2) {
+  animation-delay: 2s;
+}
+
+.star-field > div:nth-child(3) {
+  animation-delay: 4s;
+}
+
+@keyframes floatStar {
+  0%, 100% {
+    transform: translateY(0px) scale(var(--scale, 0.5)) rotate(var(--rotation, 15deg));
+  }
+  50% {
+    transform: translateY(-10px) scale(var(--scale, 0.5)) rotate(var(--rotation, 15deg));
+  }
+}

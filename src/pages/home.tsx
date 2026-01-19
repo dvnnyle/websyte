@@ -1,6 +1,7 @@
 import React from 'react';
 import { HeroSphere } from '../components/HeroSphere';
 import Navbar from '../components/navbar';
+import Footer from '../components/footer';
 
 const Home: React.FC = () => {
 	return (
@@ -9,6 +10,8 @@ const Home: React.FC = () => {
 			<Navbar />
 			{/* Fixed overlay sphere hero */}
 			<HeroSphere />
+			{/* Footer */}
+			<Footer />
 		</main>
 	);
 };
