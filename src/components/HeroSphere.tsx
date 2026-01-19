@@ -1,6 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react'; // Grunnleggende React-hooks
 import { Canvas, useFrame } from '@react-three/fiber'; // Canvas og animasjonsloop (React Three Fiber)
-import { Float, Cloud, Html } from '@react-three/drei'; // Drei-hjelpere (Float, Cloud, Html)
+import { Float, Cloud } from '@react-three/drei'; // Drei-hjelpere (Float, Cloud)
 import * as THREE from 'three'; // Three.js kjerne
 
 
@@ -25,14 +25,13 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
   const fragmentsRef = useRef<THREE.Mesh[]>([]);
   const innerCount = 120;
   const outerCount = 32;
-  const smoothProgressRef = useRef(0);
+  // Removed unused smoothProgressRef
   const tmpPos = useRef(new THREE.Vector3());
   const tmpVel = useRef(new THREE.Vector3());
   const tmpNorm = useRef(new THREE.Vector3());
-  const cellSize = 0.9;
-  const DAMP_LAMBDA = 1.5; // Lower for consistent scroll response from start
+  // Removed unused cellSize and DAMP_LAMBDA
   const SCROLL_INTENSITY = 0.45;
-  const ROTATION_RESPONSE = 0.35;
+  // Removed unused ROTATION_RESPONSE
   const EXPLOSION_DISTANCE = 1.2; // Increase spread distance on scroll
 
   // Seeded random for deterministic fragment generation across refreshes
@@ -183,26 +182,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
 
   const fragmentGeometry = useMemo(() => new THREE.IcosahedronGeometry(1, 0), []);
 
-  // Create simple 2D star shape
-  const starGeometry = useMemo(() => {
-    const shape = new THREE.Shape();
-    const outerRadius = 1;
-    const innerRadius = 0.2;
-    const points = 4;
-    
-    for (let i = 0; i < points * 2; i++) {
-      const angle = (i * Math.PI) / points;
-      const radius = i % 2 === 0 ? outerRadius : innerRadius;
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
-      if (i === 0) shape.moveTo(x, y);
-      else shape.lineTo(x, y);
-    }
-    shape.lineTo(outerRadius, 0);
-    
-    const geometry = new THREE.ShapeGeometry(shape);
-    return geometry;
-  }, []);
+  // Removed unused starGeometry
 
   const elasticOut = (t: number) => {
     const c4 = (2 * Math.PI) / 3;
@@ -211,7 +191,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
 
   useFrame((state, delta) => {
     // Clamp delta to prevent inconsistent behavior during performance dips
-    const dt = Math.min(typeof delta === 'number' ? delta : 0.016, 0.1);
+    // Removed unused dt
     const spScaled = Math.min(1, scrollRef.current * SCROLL_INTENSITY);
     if (groupRef.current) {
       const tt = state.clock.elapsedTime;
