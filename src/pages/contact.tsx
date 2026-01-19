@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 
 const Contact: React.FC = () => {
+	const [isVisible, setIsVisible] = useState(false);
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setIsVisible(true);
+		}, 50);
+		return () => clearTimeout(timer);
+	}, []);
+
 	const containerStyle: React.CSSProperties = {
 		position: 'relative',
 		zIndex: 5,
@@ -23,9 +32,15 @@ const Contact: React.FC = () => {
 		position: 'fixed',
 		top: '40%',
 		left: '50%',
-		transform: 'translate(-50%, -50%)',
-		transition: 'opacity 1s ease-in',
-		opacity: 1,
+		transform: isVisible 
+			? 'translate(-50%, -50%) translateY(0) scale(1)' 
+			: 'translate(-50%, -50%) translateY(20px) scale(0.95)',
+		transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+		opacity: isVisible ? 1 : 0,
+		textShadow: isVisible 
+			? '0 0 10px rgba(233, 233, 233, 0.6), 0 0 0px rgba(233, 233, 233, 0.3), 0 0 0px rgba(233, 233, 233, 0.1)' 
+			: 'none',
+		filter: isVisible ? 'blur(0px)' : 'blur(2px)',
 		zIndex: 10,
 	};
 
