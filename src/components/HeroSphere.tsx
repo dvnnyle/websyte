@@ -1,6 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react'; // Grunnleggende React-hooks
 import { Canvas, useFrame } from '@react-three/fiber'; // Canvas og animasjonsloop (React Three Fiber)
-import { Float, Cloud } from '@react-three/drei'; // Drei-hjelpere (Float, Cloud)
+import { Float, Cloud, Html } from '@react-three/drei'; // Drei-hjelpere (Float, Cloud, Html)
 import * as THREE from 'three'; // Three.js kjerne
 
 
@@ -18,7 +18,6 @@ interface FragmentData {
   explodeMultiplier: number;
   opacityFactor: number;
   isOuter?: boolean;
-  collisionOffset: THREE.Vector3;
 }
 
 const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => {
@@ -31,23 +30,33 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
   const tmpVel = useRef(new THREE.Vector3());
   const tmpNorm = useRef(new THREE.Vector3());
   const cellSize = 0.9;
-  const restitution = 0.45;
-  const radiusFactor = 1.05;
-  const DAMP_LAMBDA = 3.0; // Increased for more consistent, stable damping
+  const DAMP_LAMBDA = 1.5; // Lower for consistent scroll response from start
   const SCROLL_INTENSITY = 0.45;
   const ROTATION_RESPONSE = 0.35;
+  const EXPLOSION_DISTANCE = 1.2; // Increase spread distance on scroll
+
+  // Seeded random for deterministic fragment generation across refreshes
+  const mulberry32 = (a: number) => {
+    return () => {
+      let t = (a += 0x6D2B79F5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  };
 
   const fragments = useMemo<FragmentData[]>(() => {
+    const rand = mulberry32(123456789);
     const frags: FragmentData[] = [];
-    const superCount = 1 + Math.floor(Math.random() * 5);
+    const superCount = 1 + Math.floor(rand() * 5);
     const superPositions: THREE.Vector3[] = [];
     const superMinSeparation = 0.9;
     for (let k = 0; k < superCount; k++) {
       let tries = 0;
       let originalPos = new THREE.Vector3();
       while (tries < 25) {
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
+        const theta = rand() * Math.PI * 2;
+        const phi = Math.acos(2 * rand() - 1);
         const radius = 2.0;
         const x = radius * Math.sin(phi) * Math.cos(theta);
         const y = radius * Math.sin(phi) * Math.sin(theta);
@@ -58,124 +67,142 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         tries++;
       }
       superPositions.push(originalPos.clone());
-      const velocity = originalPos.clone().normalize().multiplyScalar(1.2 + Math.random() * 0.8);
-      velocity.x += (Math.random() - 0.5) * 0.4;
-      velocity.y += (Math.random() - 0.5) * 0.4;
-      velocity.z += (Math.random() - 0.5) * 0.4;
-      const scale = (0.48 + Math.random() * 0.22) * 0.65;
+      const velocity = originalPos.clone().normalize().multiplyScalar(1.2 + rand() * 0.8);
+      velocity.x += (rand() - 0.5) * 0.4;
+      velocity.y += (rand() - 0.5) * 0.4;
+      velocity.z += (rand() - 0.5) * 0.4;
+      const scale = (0.48 + rand() * 0.22) * 0.65;
       frags.push({
         position: originalPos.clone(),
         originalPosition: originalPos.clone(),
         velocity,
         rotation: new THREE.Euler(
-          Math.random() * Math.PI * 2,
-          Math.random() * Math.PI * 2,
-          Math.random() * Math.PI * 2
+          rand() * Math.PI * 2,
+          rand() * Math.PI * 2,
+          rand() * Math.PI * 2
         ),
         rotationSpeed: new THREE.Vector3(
-          (Math.random() - 0.5) * 3,
-          (Math.random() - 0.5) * 3,
-          (Math.random() - 0.5) * 3
+          (rand() - 0.5) * 3,
+          (rand() - 0.5) * 3,
+          (rand() - 0.5) * 3
         ),
         scale,
-        phase: Math.random() * Math.PI * 2,
-        floatAmplitude: 0.08 + Math.random() * 0.1,
-        floatFrequency: 0.35 + Math.random() * 0.25,
+        phase: rand() * Math.PI * 2,
+        floatAmplitude: 0.08 + rand() * 0.1,
+        floatFrequency: 0.35 + rand() * 0.25,
         lastTarget: originalPos.clone(),
-        explodeMultiplier: 0.9,
+        explodeMultiplier: 1.3,
         opacityFactor: 1.0,
         isOuter: false,
-        collisionOffset: new THREE.Vector3(),
       });
     }
     for (let i = 0; i < innerCount; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
+      const theta = rand() * Math.PI * 2;
+      const phi = Math.acos(2 * rand() - 1);
       const radius = 1.8;
       const x = radius * Math.sin(phi) * Math.cos(theta);
       const y = radius * Math.sin(phi) * Math.sin(theta);
       const z = radius * Math.cos(phi);
       const originalPos = new THREE.Vector3(x, y, z);
-      const velocity = originalPos.clone().normalize().multiplyScalar(2 + Math.random() * 3);
-      velocity.x += (Math.random() - 0.5) * 2;
-      velocity.y += (Math.random() - 0.5) * 2;
-      velocity.z += (Math.random() - 0.5) * 2;
-      const rScale = Math.random();
+      const velocity = originalPos.clone().normalize().multiplyScalar(2 + rand() * 3);
+      velocity.x += (rand() - 0.5) * 2;
+      velocity.y += (rand() - 0.5) * 2;
+      velocity.z += (rand() - 0.5) * 2;
+      const rScale = rand();
       const scale = rScale < 0.15
-        ? 0.16 + Math.random() * 0.12
+        ? 0.16 + rand() * 0.12
         : rScale < 0.35
-          ? 0.03 + Math.random() * 0.05
-          : 0.08 + Math.random() * 0.12;
+          ? 0.03 + rand() * 0.05
+          : 0.08 + rand() * 0.12;
       frags.push({
         position: originalPos.clone(),
         originalPosition: originalPos.clone(),
         velocity,
         rotation: new THREE.Euler(
-          Math.random() * Math.PI * 2,
-          Math.random() * Math.PI * 2,
-          Math.random() * Math.PI * 2
+          rand() * Math.PI * 2,
+          rand() * Math.PI * 2,
+          rand() * Math.PI * 2
         ),
         rotationSpeed: new THREE.Vector3(
-          (Math.random() - 0.5) * 6,
-          (Math.random() - 0.5) * 6,
-          (Math.random() - 0.5) * 6
+          (rand() - 0.5) * 6,
+          (rand() - 0.5) * 6,
+          (rand() - 0.5) * 6
         ),
         scale,
-        phase: Math.random() * Math.PI * 2,
-        floatAmplitude: 0.15 + Math.random() * 0.25,
-        floatFrequency: 0.6 + Math.random() * 0.6,
+        phase: rand() * Math.PI * 2,
+        floatAmplitude: 0.15 + rand() * 0.25,
+        floatFrequency: 0.6 + rand() * 0.6,
         lastTarget: originalPos.clone(),
-        explodeMultiplier: 1.1,
+        explodeMultiplier: 1.8,
         opacityFactor: 1.0,
         isOuter: false,
-        collisionOffset: new THREE.Vector3(),
       });
     }
     for (let i = 0; i < outerCount; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
+      const theta = rand() * Math.PI * 2;
+      const phi = Math.acos(2 * rand() - 1);
       const radius = 3.6 + Math.random() * 0.8;
       const x = radius * Math.sin(phi) * Math.cos(theta);
       const y = radius * Math.sin(phi) * Math.sin(theta);
       const z = radius * Math.cos(phi);
       const originalPos = new THREE.Vector3(x, y, z);
-      const velocity = originalPos.clone().normalize().multiplyScalar(0.6 + Math.random() * 0.6);
-      velocity.x += (Math.random() - 0.5) * 0.6;
-      velocity.y += (Math.random() - 0.5) * 0.6;
-      velocity.z += (Math.random() - 0.5) * 0.6;
-      const rScaleOuter = Math.random();
+      const velocity = originalPos.clone().normalize().multiplyScalar(0.6 + rand() * 0.6);
+      velocity.x += (rand() - 0.5) * 0.6;
+      velocity.y += (rand() - 0.5) * 0.6;
+      velocity.z += (rand() - 0.5) * 0.6;
+      const rScaleOuter = rand();
       const scaleOuter = rScaleOuter < 0.8
-        ? 0.02 + Math.random() * 0.04
-        : 0.05 + Math.random() * 0.06;
+        ? 0.02 + rand() * 0.04
+        : 0.05 + rand() * 0.06;
       frags.push({
         position: originalPos.clone(),
         originalPosition: originalPos.clone(),
         velocity,
         rotation: new THREE.Euler(
-          Math.random() * Math.PI * 2,
-          Math.random() * Math.PI * 2,
-          Math.random() * Math.PI * 2
+          rand() * Math.PI * 2,
+          rand() * Math.PI * 2,
+          rand() * Math.PI * 2
         ),
         rotationSpeed: new THREE.Vector3(
-          (Math.random() - 0.5) * 2.2,
-          (Math.random() - 0.5) * 2.2,
-          (Math.random() - 0.5) * 2.2
+          (rand() - 0.5) * 2.2,
+          (rand() - 0.5) * 2.2,
+          (rand() - 0.5) * 2.2
         ),
         scale: scaleOuter,
-        phase: Math.random() * Math.PI * 2,
-        floatAmplitude: 0.06 + Math.random() * 0.1,
-        floatFrequency: 0.3 + Math.random() * 0.5,
+        phase: rand() * Math.PI * 2,
+        floatAmplitude: 0.06 + rand() * 0.1,
+        floatFrequency: 0.3 + rand() * 0.5,
         lastTarget: originalPos.clone(),
-        explodeMultiplier: 0.6,
+        explodeMultiplier: 1.0,
         opacityFactor: 0.3,
         isOuter: true,
-        collisionOffset: new THREE.Vector3(),
       });
     }
     return frags;
   }, []);
 
   const fragmentGeometry = useMemo(() => new THREE.IcosahedronGeometry(1, 0), []);
+
+  // Create simple 2D star shape
+  const starGeometry = useMemo(() => {
+    const shape = new THREE.Shape();
+    const outerRadius = 1;
+    const innerRadius = 0.2;
+    const points = 4;
+    
+    for (let i = 0; i < points * 2; i++) {
+      const angle = (i * Math.PI) / points;
+      const radius = i % 2 === 0 ? outerRadius : innerRadius;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      if (i === 0) shape.moveTo(x, y);
+      else shape.lineTo(x, y);
+    }
+    shape.lineTo(outerRadius, 0);
+    
+    const geometry = new THREE.ShapeGeometry(shape);
+    return geometry;
+  }, []);
 
   const elasticOut = (t: number) => {
     const c4 = (2 * Math.PI) / 3;
@@ -185,14 +212,15 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
   useFrame((state, delta) => {
     // Clamp delta to prevent inconsistent behavior during performance dips
     const dt = Math.min(typeof delta === 'number' ? delta : 0.016, 0.1);
-    const sp = THREE.MathUtils.damp(smoothProgressRef.current, scrollRef.current, DAMP_LAMBDA, dt);
-    const spScaled = Math.min(1, sp * SCROLL_INTENSITY);
-    smoothProgressRef.current = sp;
+    const spScaled = Math.min(1, scrollRef.current * SCROLL_INTENSITY);
     if (groupRef.current) {
-      groupRef.current.rotation.x = state.clock.elapsedTime * 0.08 * (1 - spScaled);
-      groupRef.current.rotation.y = state.clock.elapsedTime * 0.12 * (1 - spScaled);
-      const breathe = 1 + Math.sin(state.clock.elapsedTime * 0.8) * (0.03 + spScaled * 0.03);
-      groupRef.current.scale.set(breathe, breathe, breathe);
+      const tt = state.clock.elapsedTime;
+      // Continuous one-direction rotation (no oscillation)
+      groupRef.current.rotation.x = tt * 0.08;
+      groupRef.current.rotation.y = tt * 0.12;
+      groupRef.current.rotation.z = tt * 0.04;
+      // Keep scale steady (no breathing)
+      groupRef.current.scale.set(1, 1, 1);
     }
     const t = state.clock.elapsedTime;
     fragmentsRef.current.forEach((mesh, i) => {
@@ -200,25 +228,32 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
       const frag = fragments[i];
       const explodeFactor = elasticOut(spScaled) * (frag.explodeMultiplier ?? 1);
       const explodedPos = tmpPos.current.copy(frag.originalPosition).add(
-        tmpVel.current.copy(frag.velocity).multiplyScalar(explodeFactor)
+        tmpVel.current.copy(frag.velocity).multiplyScalar(explodeFactor * EXPLOSION_DISTANCE)
       );
-      mesh.position.lerpVectors(frag.originalPosition, explodedPos, spScaled);
+      const clampedScroll = Math.min(spScaled, 1);
+      mesh.position.copy(frag.originalPosition).lerp(explodedPos, clampedScroll);
       const normal = tmpNorm.current.copy(frag.originalPosition).normalize();
-      const floatOffset = normal.multiplyScalar(
-        Math.sin(t * frag.floatFrequency + frag.phase) * frag.floatAmplitude * (0.3 + spScaled * 0.22)
-      );
-      mesh.position.add(floatOffset);
-      mesh.position.add(frag.collisionOffset);
-      const movementSpeed = mesh.position.distanceTo(frag.lastTarget) / dt;
+      // Remove oscillatory float; keep position steady (explosion handles spread)
+      const floatOffsetAmount = 0;
+      mesh.position.add(normal.multiplyScalar(floatOffsetAmount));
       frag.lastTarget.copy(mesh.position);
-      const movementIntensity = Math.min(movementSpeed / 1.5, 1);
-      const scalePulse = 1 + Math.sin(t * (frag.floatFrequency * 0.9) + frag.phase) * 0.06;
+      const movementIntensity = 0.5; // Fixed speed for material response
+      const scalePulse = 1; // No back-and-forth scaling
       mesh.scale.setScalar(frag.scale * scalePulse);
-      const rotScale = ROTATION_RESPONSE * (spScaled * spScaled);
-      mesh.rotation.x = frag.rotation.x + rotScale * frag.rotationSpeed.x;
-      mesh.rotation.y = frag.rotation.y + rotScale * frag.rotationSpeed.y;
-      mesh.rotation.z = frag.rotation.z + rotScale * frag.rotationSpeed.z;
-      frag.collisionOffset.multiplyScalar(0.96);
+      // One-direction continuous rotation with bounded, per-fragment speeds
+      const TWO_PI = Math.PI * 2;
+      const baseSpeedX = 0.35;
+      const baseSpeedY = 0.5;
+      const baseSpeedZ = 0.42;
+      const speedX = baseSpeedX * (0.3 + Math.min(1, Math.abs(frag.rotationSpeed.x) / 6));
+      const speedY = baseSpeedY * (0.3 + Math.min(1, Math.abs(frag.rotationSpeed.y) / 6));
+      const speedZ = baseSpeedZ * (0.3 + Math.min(1, Math.abs(frag.rotationSpeed.z) / 6));
+      const dirX = Math.sign(frag.rotationSpeed.x) || 1;
+      const dirY = Math.sign(frag.rotationSpeed.y) || 1;
+      const dirZ = Math.sign(frag.rotationSpeed.z) || 1;
+      mesh.rotation.x = (frag.rotation.x + t * speedX * dirX) % TWO_PI;
+      mesh.rotation.y = (frag.rotation.y + t * speedY * dirY) % TWO_PI;
+      mesh.rotation.z = (frag.rotation.z + t * speedZ * dirZ) % TWO_PI;
       const matAny = mesh.material as any;
       if (matAny) {
         const opacityVal = (1 - spScaled * 0.7) * (frag.opacityFactor ?? 1);
@@ -245,165 +280,15 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         }
       }
     });
-
-    const cellMap: Record<string, number[]> = {};
-    const getKey = (p: THREE.Vector3) => {
-      const cx = Math.floor(p.x / cellSize);
-      const cy = Math.floor(p.y / cellSize);
-      const cz = Math.floor(p.z / cellSize);
-      return `${cx}|${cy}|${cz}`;
-    };
-    fragmentsRef.current.forEach((mesh, i) => {
-      if (!mesh || !fragments[i]) return;
-      const key = getKey(mesh.position);
-      (cellMap[key] ||= []).push(i);
-    });
-    const tryResolvePair = (i: number, j: number) => {
-      const mi = fragmentsRef.current[i];
-      const mj = fragmentsRef.current[j];
-      if (!mi || !mj) return;
-      const fi = fragments[i];
-      const fj = fragments[j];
-      if (!fi || !fj) return;
-      const ri = (mi.scale.x || fi.scale || 0.1) * radiusFactor;
-      const rj = (mj.scale.x || fj.scale || 0.1) * radiusFactor;
-      const pi = tmpPos.current.copy(mi.position);
-      const pj = tmpVel.current.copy(mj.position);
-      const deltaVec = tmpNorm.current.copy(pi).sub(pj);
-      const dist = deltaVec.length();
-      const minDist = ri + rj;
-      if (dist <= 1e-6) {
-        deltaVec.set((Math.random()-0.5)*0.01, (Math.random()-0.5)*0.01, (Math.random()-0.5)*0.01);
-      }
-      if (dist < minDist) {
-        const n = deltaVec.normalize();
-        const overlap = minDist - dist;
-        const miMass = Math.max(0.08, ri * ri);
-        const mjMass = Math.max(0.08, rj * rj);
-        const vi = fi.velocity;
-        const vj = fj.velocity;
-        const relVel = tmpPos.current.copy(vi).sub(vj);
-        const vRelN = relVel.dot(n);
-        if (vRelN < 0) {
-          const j = -(1 + restitution) * vRelN / (1/miMass + 1/mjMass);
-          const impulseSoft = j * 0.3;
-          vi.addScaledVector(n, (impulseSoft / miMass));
-          vj.addScaledVector(n, -(impulseSoft / mjMass));
-        }
-        const k = 2.0;
-        const repulse = Math.min(overlap, 0.6) * k * dt;
-        vi.addScaledVector(n, (repulse / miMass));
-        vj.addScaledVector(n, -(repulse / mjMass));
-        const biasEach = Math.min(overlap, 0.25) * 0.08;
-        fi.collisionOffset.addScaledVector(n, biasEach);
-        fj.collisionOffset.addScaledVector(n, -biasEach);
-        mi.position.addScaledVector(n, biasEach);
-        mj.position.addScaledVector(n, -biasEach);
-        fi.velocity.multiplyScalar(0.995);
-        fj.velocity.multiplyScalar(0.995);
-      }
-    };
-    const neighborOffsets: Array<[number, number, number]> = [];
-    for (let ox = -1; ox <= 1; ox++) {
-      for (let oy = -1; oy <= 1; oy++) {
-        for (let oz = -1; oz <= 1; oz++) {
-          neighborOffsets.push([ox, oy, oz]);
-        }
-      }
-    }
-    const iterations = 2;
-    for (let iter = 0; iter < iterations; iter++) {
-      Object.keys(cellMap).forEach((key) => {
-        const [cx, cy, cz] = key.split('|').map(Number);
-        const indices: number[] = [];
-        neighborOffsets.forEach(([ox,oy,oz]) => {
-          const nk = `${cx+ox}|${cy+oy}|${cz+oz}`;
-          const arr = cellMap[nk];
-          if (arr) indices.push(...arr);
-        });
-        for (let a = 0; a < indices.length; a++) {
-          for (let b = a + 1; b < indices.length; b++) {
-            tryResolvePair(indices[a], indices[b]);
-          }
-        }
-      });
-    }
   });
 
   return (
     <>
-      {/* 
-        ==================== STAR CONFIGURATION ====================
-        TO TURN ON THE STAR: Uncomment the sprite section below
-        TO CHANGE STAR SIZE: Modify the scale values (e.g., scale={[0.5, 0.5, 0.5]})
-        TO CHANGE STAR COLOR: Update the rgba values in:
-          - ctx.fillStyle (line ~381) - star color
-          - ctx.shadowColor (line ~383) - shadow/glow color  
-          - gradient.addColorStop (lines ~370-374) - gradient glow colors
-        Current color: #FFCE1B (255, 206, 27)
-        ============================================================
-      */}
-      
-      {/* Simple 2D star with glow - CURRENTLY DISABLED */}
-      {/* <sprite position={[0, 0, 0]} scale={[0.5, 0.5, 0.5]}>
-        <spriteMaterial
-          map={(() => {
-            const canvas = document.createElement('canvas');
-            canvas.width = 512;
-            canvas.height = 512;
-            const ctx = canvas.getContext('2d')!;
-            
-            // Enable anti-aliasing
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-            
-            // Create radial gradient for glow
-            const gradient = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
-            gradient.addColorStop(0, 'rgba(255, 206, 27, 0.15)');
-            gradient.addColorStop(0.2, 'rgba(255, 206, 27, 0.1)');
-            gradient.addColorStop(0.4, 'rgba(255, 206, 27, 0.06)');
-            gradient.addColorStop(0.7, 'rgba(200, 160, 20, 0.03)');
-            gradient.addColorStop(1, 'rgba(150, 120, 15, 0)');
-            
-            // Draw glow
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 512, 512);
-            
-            // Draw star shape with smoother edges - darker center
-            ctx.fillStyle = 'rgba(227, 227, 227, 1)';
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
-            ctx.beginPath();
-            const points = 4;
-            const outerRadius = 120;
-            const innerRadius = 24;
-            for (let i = 0; i < points * 2; i++) {
-              const angle = (i * Math.PI) / points - Math.PI / 2;
-              const radius = i % 2 === 0 ? outerRadius : innerRadius;
-              const x = 256 + Math.cos(angle) * radius;
-              const y = 256 + Math.sin(angle) * radius;
-              if (i === 0) ctx.moveTo(x, y);
-              else ctx.lineTo(x, y);
-            }
-            ctx.closePath();
-            ctx.fill();
-            
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.minFilter = THREE.LinearFilter;
-            texture.magFilter = THREE.LinearFilter;
-            return texture;
-          })()}
-          transparent
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </sprite> */}
-
       <Float
-        speed={1.8}
-        rotationIntensity={0.5}
-        floatIntensity={1.0}
-        floatingRange={[-0.1, 0.1]}
+        speed={0}
+        rotationIntensity={0}
+        floatIntensity={0}
+        floatingRange={[0, 0]}
       >
         <group ref={groupRef}>
           {fragments.map((frag, i) => (
@@ -419,21 +304,23 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
             receiveShadow
           >
             <meshPhysicalMaterial
-              color={frag.isOuter ? "#000000" : "#000000"}
-              metalness={0.1}
-              roughness={0.58}
-              clearcoat={1}
-              clearcoatRoughness={0.18}
-              specularIntensity={0.6}
-              specularColor={"#ffffff"}
-              flatShading
-              transparent
-              opacity={frag.isOuter ? 0.35 : 1}
-              envMapIntensity={0}
+                color={frag.isOuter ? "#2a2a2a" : "#4a4a4a"}
+                emissive={"#1a1a1a"}
+                emissiveIntensity={0.3}
+                metalness={0.2}
+                roughness={0.5}
+                clearcoat={0.6}
+                clearcoatRoughness={0.35}
+                specularIntensity={0.6}
+                specularColor={"#ffffff"}
+                flatShading
+                transparent
+                opacity={frag.isOuter ? 0.5 : 1}
+                envMapIntensity={0.4}
             />
           </mesh>
         ))}
-        <pointLight position={[0, 0, 0]} intensity={0.35} distance={0} decay={2} color="#9c9c9c" castShadow />
+        {/* Removed rotating point light to avoid inconsistent highlights */}
       </group>
     </Float>
     </>
@@ -443,13 +330,12 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
 const Scene = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => {
   return (
     <>
-      <ambientLight intensity={0.18} />
-      <directionalLight position={[5, 6, 4]} intensity={0.65} color="#00000000" castShadow />
-      <directionalLight position={[-4, -5, -6]} intensity={0.35} color="#00000000" castShadow />
-      <Cloud position={[0, 0, 0]} scale={[5, 5, 5]} opacity={0.08} speed={0.18} color="#818181" segments={28} />
+      <ambientLight intensity={0.35} />
+      <directionalLight position={[5, 6, 4]} intensity={0.8} color="#555555" castShadow />
+      <directionalLight position={[-4, -5, -6]} intensity={0.6} color="#444444" castShadow />
+      <Cloud position={[0, 0, 0]} scale={[5, 5, 5]} opacity={0.15} speed={0.18} color="#777777" segments={28} />
       <ExplodingSphere scrollRef={scrollRef} />
-      <pointLight position={[0, 0, 0]} intensity={0.35} distance={0} decay={2} color="#000000" castShadow />
-    </>
+    </> 
   );
 };
 
@@ -474,10 +360,10 @@ export const HeroSphere = () => {
     <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', pointerEvents: 'none' }}>
       <Canvas
         camera={{ position: [0, 0, 6], fov: 45 }}
-        gl={{ antialias: true, alpha: true }}
-        style={{ width: '100%', height: '100%', background: 'transparent' }}
+        gl={{ antialias: true, alpha: false }}
+        style={{ width: '100%', height: '100%', background: '#0a0a0a' }}
       >
-        <fogExp2 attach="fog" args={["#000000", 0.03]} />
+        <fogExp2 attach="fog" args={["#0f0f0f", 0.01]} />
         <Scene scrollRef={scrollRef} />
       </Canvas>
     </div>

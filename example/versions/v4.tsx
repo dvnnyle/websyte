@@ -18,7 +18,6 @@ interface FragmentData {
   explodeMultiplier: number;
   opacityFactor: number;
   isOuter?: boolean;
-  collisionOffset: THREE.Vector3;
 }
 
 const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => {
@@ -31,9 +30,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
   const tmpVel = useRef(new THREE.Vector3());
   const tmpNorm = useRef(new THREE.Vector3());
   const cellSize = 0.9;
-  const restitution = 0.45;
-  const radiusFactor = 1.05;
-  const DAMP_LAMBDA = 1.4;
+  const DAMP_LAMBDA = 3.0; // Increased for more consistent, stable damping
   const SCROLL_INTENSITY = 0.45;
   const ROTATION_RESPONSE = 0.35;
 
@@ -85,7 +82,6 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         explodeMultiplier: 0.9,
         opacityFactor: 1.0,
         isOuter: false,
-        collisionOffset: new THREE.Vector3(),
       });
     }
     for (let i = 0; i < innerCount; i++) {
@@ -128,7 +124,6 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         explodeMultiplier: 1.1,
         opacityFactor: 1.0,
         isOuter: false,
-        collisionOffset: new THREE.Vector3(),
       });
     }
     for (let i = 0; i < outerCount; i++) {
@@ -169,7 +164,6 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         explodeMultiplier: 0.6,
         opacityFactor: 0.3,
         isOuter: true,
-        collisionOffset: new THREE.Vector3(),
       });
     }
     return frags;
@@ -204,7 +198,8 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
   };
 
   useFrame((state, delta) => {
-    const dt = (typeof delta === 'number' ? delta : 0.016);
+    // Clamp delta to prevent inconsistent behavior during performance dips
+    const dt = Math.min(typeof delta === 'number' ? delta : 0.016, 0.1);
     const sp = THREE.MathUtils.damp(smoothProgressRef.current, scrollRef.current, DAMP_LAMBDA, dt);
     const spScaled = Math.min(1, sp * SCROLL_INTENSITY);
     smoothProgressRef.current = sp;
@@ -228,7 +223,6 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         Math.sin(t * frag.floatFrequency + frag.phase) * frag.floatAmplitude * (0.3 + spScaled * 0.22)
       );
       mesh.position.add(floatOffset);
-      mesh.position.add(frag.collisionOffset);
       const movementSpeed = mesh.position.distanceTo(frag.lastTarget) / dt;
       frag.lastTarget.copy(mesh.position);
       const movementIntensity = Math.min(movementSpeed / 1.5, 1);
@@ -238,7 +232,6 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
       mesh.rotation.x = frag.rotation.x + rotScale * frag.rotationSpeed.x;
       mesh.rotation.y = frag.rotation.y + rotScale * frag.rotationSpeed.y;
       mesh.rotation.z = frag.rotation.z + rotScale * frag.rotationSpeed.z;
-      frag.collisionOffset.multiplyScalar(0.96);
       const matAny = mesh.material as any;
       if (matAny) {
         const opacityVal = (1 - spScaled * 0.7) * (frag.opacityFactor ?? 1);
@@ -265,89 +258,6 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         }
       }
     });
-
-    const cellMap: Record<string, number[]> = {};
-    const getKey = (p: THREE.Vector3) => {
-      const cx = Math.floor(p.x / cellSize);
-      const cy = Math.floor(p.y / cellSize);
-      const cz = Math.floor(p.z / cellSize);
-      return `${cx}|${cy}|${cz}`;
-    };
-    fragmentsRef.current.forEach((mesh, i) => {
-      if (!mesh || !fragments[i]) return;
-      const key = getKey(mesh.position);
-      (cellMap[key] ||= []).push(i);
-    });
-    const tryResolvePair = (i: number, j: number) => {
-      const mi = fragmentsRef.current[i];
-      const mj = fragmentsRef.current[j];
-      if (!mi || !mj) return;
-      const fi = fragments[i];
-      const fj = fragments[j];
-      if (!fi || !fj) return;
-      const ri = (mi.scale.x || fi.scale || 0.1) * radiusFactor;
-      const rj = (mj.scale.x || fj.scale || 0.1) * radiusFactor;
-      const pi = tmpPos.current.copy(mi.position);
-      const pj = tmpVel.current.copy(mj.position);
-      const deltaVec = tmpNorm.current.copy(pi).sub(pj);
-      const dist = deltaVec.length();
-      const minDist = ri + rj;
-      if (dist <= 1e-6) {
-        deltaVec.set((Math.random()-0.5)*0.01, (Math.random()-0.5)*0.01, (Math.random()-0.5)*0.01);
-      }
-      if (dist < minDist) {
-        const n = deltaVec.normalize();
-        const overlap = minDist - dist;
-        const miMass = Math.max(0.08, ri * ri);
-        const mjMass = Math.max(0.08, rj * rj);
-        const vi = fi.velocity;
-        const vj = fj.velocity;
-        const relVel = tmpPos.current.copy(vi).sub(vj);
-        const vRelN = relVel.dot(n);
-        if (vRelN < 0) {
-          const j = -(1 + restitution) * vRelN / (1/miMass + 1/mjMass);
-          const impulseSoft = j * 0.3;
-          vi.addScaledVector(n, (impulseSoft / miMass));
-          vj.addScaledVector(n, -(impulseSoft / mjMass));
-        }
-        const k = 2.0;
-        const repulse = Math.min(overlap, 0.6) * k * dt;
-        vi.addScaledVector(n, (repulse / miMass));
-        vj.addScaledVector(n, -(repulse / mjMass));
-        const biasEach = Math.min(overlap, 0.25) * 0.08;
-        fi.collisionOffset.addScaledVector(n, biasEach);
-        fj.collisionOffset.addScaledVector(n, -biasEach);
-        mi.position.addScaledVector(n, biasEach);
-        mj.position.addScaledVector(n, -biasEach);
-        fi.velocity.multiplyScalar(0.995);
-        fj.velocity.multiplyScalar(0.995);
-      }
-    };
-    const neighborOffsets: Array<[number, number, number]> = [];
-    for (let ox = -1; ox <= 1; ox++) {
-      for (let oy = -1; oy <= 1; oy++) {
-        for (let oz = -1; oz <= 1; oz++) {
-          neighborOffsets.push([ox, oy, oz]);
-        }
-      }
-    }
-    const iterations = 2;
-    for (let iter = 0; iter < iterations; iter++) {
-      Object.keys(cellMap).forEach((key) => {
-        const [cx, cy, cz] = key.split('|').map(Number);
-        const indices: number[] = [];
-        neighborOffsets.forEach(([ox,oy,oz]) => {
-          const nk = `${cx+ox}|${cy+oy}|${cz+oz}`;
-          const arr = cellMap[nk];
-          if (arr) indices.push(...arr);
-        });
-        for (let a = 0; a < indices.length; a++) {
-          for (let b = a + 1; b < indices.length; b++) {
-            tryResolvePair(indices[a], indices[b]);
-          }
-        }
-      });
-    }
   });
 
   return (
@@ -465,8 +375,8 @@ const Scene = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => 
     <>
       <ambientLight intensity={0.18} />
       <directionalLight position={[5, 6, 4]} intensity={0.65} color="#00000000" castShadow />
-      <directionalLight position={[-4, -5, -6]} intensity={0.35} color="rgba(255, 0, 0, 0)" castShadow />
-      <Cloud position={[0, 0, 0]} scale={[5, 5, 5]} opacity={0.08} speed={0.18} color="#4f2f2fff" segments={28} />
+      <directionalLight position={[-4, -5, -6]} intensity={0.35} color="#00000000" castShadow />
+      <Cloud position={[0, 0, 0]} scale={[5, 5, 5]} opacity={0.08} speed={0.18} color="#818181" segments={28} />
       <ExplodingSphere scrollRef={scrollRef} />
       <pointLight position={[0, 0, 0]} intensity={0.35} distance={0} decay={2} color="#000000" castShadow />
     </>
