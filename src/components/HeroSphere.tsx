@@ -189,7 +189,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
     return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
   };
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     // Clamp delta to prevent inconsistent behavior during performance dips
     // Removed unused dt
     const spScaled = Math.min(1, scrollRef.current * SCROLL_INTENSITY);
