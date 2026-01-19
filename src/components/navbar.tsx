@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 type NavItem = { label: string; href: string };
 
@@ -8,13 +9,16 @@ export interface NavbarProps {
 }
 
 const defaultItems: NavItem[] = [
-	{ label: 'Home', href: '#home' },
-	{ label: 'Work', href: '#work' },
-	{ label: 'About', href: '#about' },
-	{ label: 'Contact', href: '#contact' },
+	{ label: 'Home', href: '/' },
+	{ label: 'Work', href: '/work' },
+	{ label: 'About', href: '/about' },
+	{ label: 'Contact', href: '/contact' },
 ];
 
-export const Navbar: React.FC<NavbarProps> = ({ items = defaultItems, className }) => {
+export const Navbar: React.FC<NavbarProps> = ({ 
+	items = defaultItems, 
+	className
+}) => {
 	const navStyle: React.CSSProperties = {
 		position: 'fixed',
 		top: 16,
@@ -72,20 +76,20 @@ export const Navbar: React.FC<NavbarProps> = ({ items = defaultItems, className 
 			<ul style={ulStyle}>
 				{items.map((item) => (
 					<li key={item.href} style={liStyle}>
-						<a
-							href={item.href}
+						<Link
+							to={item.href}
 							style={linkStyle}
 							onMouseEnter={(e) => {
 								e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-									e.currentTarget.style.filter = 'brightness(105%)';
-								}}
+								e.currentTarget.style.filter = 'brightness(105%)';
+							}}
 							onMouseLeave={(e) => {
 								e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
 								e.currentTarget.style.filter = 'none';
-								}}
+							}}
 						>
 							<span style={labelStyle}>{item.label}</span>
-						</a>
+						</Link>
 					</li>
 				))}
 			</ul>

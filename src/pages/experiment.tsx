@@ -1,6 +1,15 @@
 import React from 'react';
+import { PlanetDigital } from '../components/planetdigital';
 
-const FourPointStar: React.FC = () => {
+const Experiment: React.FC = () => {
+	return (
+		<main className="experiment-page">
+			<PlanetDigital />
+		</main>
+	);
+};
+
+export default Experiment;
 	return (
 		<div className="star-container">
 			<svg

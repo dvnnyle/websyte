@@ -1,0 +1,117 @@
+.digital-planet-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: transparent;
+}
+
+.digital-planet-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.planet-info {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  z-index: 100;
+  font-family: 'JetBrains Mono', monospace;
+  color: #4a90d9;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.planet-label {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #4a90d9;
+  animation: pulse 2s infinite;
+}
+
+.planet-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  font-weight: 400;
+  position: relative;
+  padding-left: 12px;
+}
+
+.stat::before {
+  content: '>';
+  position: absolute;
+  left: 0;
+  color: #4a90d9;
+  animation: blink 1s infinite;
+}
+
+.stat:nth-child(2)::before {
+  animation-delay: 0.3s;
+}
+
+.stat:nth-child(3)::before {
+  animation-delay: 0.6s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    text-shadow: 0 0 5px #4a90d9;
+  }
+  50% {
+    text-shadow: 0 0 20px #4a90d9, 0 0 30px #4a90d9;
+  }
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .planet-info {
+    top: 20px;
+    left: 20px;
+  }
+  
+  .planet-label {
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
+  
+  .stat {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .planet-info {
+    top: 15px;
+    left: 15px;
+  }
+  
+  .planet-label {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+  
+  .stat {
+    font-size: 0.65rem;
+    gap: 6px;
+  }
+}
+
+/* Remove excessive effects to match HeroSphere's minimal approach */
