@@ -165,11 +165,6 @@ const Contact: React.FC = () => {
 		boxSizing: 'border-box',
 	};
 
-	const sendingTextStyle: React.CSSProperties = {
-		display: 'inline-block',
-		animation: 'wave 1.5s ease-in-out infinite',
-	};
-
 	const backButtonStyle: React.CSSProperties = {
 		width: '35px',
 		height: '35px',
