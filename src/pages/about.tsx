@@ -30,7 +30,7 @@ const About: React.FC = () => {
 
 	const titleStyle: React.CSSProperties = {
 		color: '#e9e9e9',
-		fontSize: '4rem',
+		fontSize: 'clamp(2.5rem, 8vw, 4rem)',
 		fontWeight: 600,
 		letterSpacing: '-0.5px',
 		position: 'fixed',

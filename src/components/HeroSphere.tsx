@@ -280,7 +280,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         floatIntensity={0}
         floatingRange={[0, 0]}
       >
-        <group ref={groupRef} position={[0, isMobile ? 1.2 : 0, 0]} scale={1.1}>
+        <group ref={groupRef} position={[0, isMobile ? 1.2 : -0.2, 0]} scale={1.1}>
           {fragments.map((frag, i) => (
           <mesh
             key={i}
@@ -311,7 +311,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
           </mesh>
         ))}
         {/* Punktlys litt utenfor sentrum for å eliminere sentral radial */}
-        <pointLight position={[0.2, 0.2, 0.2]} intensity={0.15} distance={20} decay={1.5} color="#ffa600" />
+        <pointLight position={[0.2, isMobile ? 1.4 : 0, 0.2]} intensity={0.15} distance={20} decay={1.5} color="#ffa600" />
         <ambientLight intensity={0.1} color="#703600" />
       </group>
     </Float>
