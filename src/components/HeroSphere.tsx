@@ -91,9 +91,9 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
           rand() * Math.PI * 2
         ),
         rotationSpeed: new THREE.Vector3(
-          (rand() - 0.5) * 3,
-          (rand() - 0.5) * 3,
-          (rand() - 0.5) * 3
+          (rand() - 0.5) * 3 * (rand() < 0.08 ? 6 : rand() < 0.18 ? 4 : rand() < 0.35 ? 2 : 1), // Multi-tier speed: 8% ultra-fast (6x), 10% very fast (4x), 17% fast (2x)
+          (rand() - 0.5) * 3 * (rand() < 0.08 ? 6 : rand() < 0.18 ? 4 : rand() < 0.35 ? 2 : 1),
+          (rand() - 0.5) * 3 * (rand() < 0.08 ? 6 : rand() < 0.18 ? 4 : rand() < 0.35 ? 2 : 1)
         ),
         scale,
         phase: rand() * Math.PI * 2,
@@ -133,9 +133,9 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
           rand() * Math.PI * 2
         ),
         rotationSpeed: new THREE.Vector3(
-          (rand() - 0.5) * 6,
-          (rand() - 0.5) * 6,
-          (rand() - 0.5) * 6
+          (rand() - 0.5) * 6 * (rand() < 0.05 ? 5 : rand() < 0.15 ? 3 : rand() < 0.3 ? 2 : 1), // Multi-tier speed: 5% ultra-fast (5x), 10% very fast (3x), 15% fast (2x)
+          (rand() - 0.5) * 6 * (rand() < 0.05 ? 5 : rand() < 0.15 ? 3 : rand() < 0.3 ? 2 : 1),
+          (rand() - 0.5) * 6 * (rand() < 0.05 ? 5 : rand() < 0.15 ? 3 : rand() < 0.3 ? 2 : 1)
         ),
         scale,
         phase: rand() * Math.PI * 2,
@@ -206,9 +206,9 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
     if (groupRef.current) {
       const tt = state.clock.elapsedTime;
       // Kontinuerlig en-retnings rotasjon (ingen oscillasjon)
-      groupRef.current.rotation.x = tt * 0.08;
-      groupRef.current.rotation.y = tt * 0.12;
-      groupRef.current.rotation.z = tt * 0.04;
+      groupRef.current.rotation.x = tt * 0.04;
+      groupRef.current.rotation.y = tt * 0.06;
+      groupRef.current.rotation.z = tt * 0.02;
       // Hold skala jevn (ingen pulsering)
       groupRef.current.scale.set(1, 1, 1);
     }
@@ -294,12 +294,12 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
             receiveShadow
           >
             <meshPhysicalMaterial
-                color={frag.isOuter ? "#2a2a2a" : "#4a4a4a"}
+                color={frag.isOuter ? "#2a2a2a" : "#2b2b2b"}
                 emissive={"#1a1a1a"}
                 emissiveIntensity={0.3}
-                metalness={0.2}
-                roughness={0.5}
-                clearcoat={0.6}
+                metalness={0.4}
+                roughness={0.6}
+                clearcoat={0.9}
                 clearcoatRoughness={0.35}
                 specularIntensity={0.6}
                 specularColor={"#ffffff"}
@@ -310,10 +310,10 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
             />
           </mesh>
         ))}
-        {/* Punktlys litt utenfor sentrum for å eliminere sentral radial */}
-        <pointLight position={[0.2, isMobile ? 1.4 : 0, 0.2]} intensity={0.15} distance={20} decay={1.5} color="#ffa600" />
         <ambientLight intensity={0.1} color="#703600" />
       </group>
+      {/* Punktlys litt utenfor sentrum for å eliminere sentral radial - utenfor gruppe så den ikke roterer */}
+      <pointLight position={isMobile ? [0, 1.2, 0] : [0.1, -0.1, 0.2]} intensity={6} distance={20} decay={1.5} color="#510080" />
     </Float>
     </>
   );
@@ -322,10 +322,11 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
 const Scene = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => {
   return (
     <>
-      <ambientLight intensity={0.35} />
-      <directionalLight position={[5, 6, 4]} intensity={0.8} color="#555555" castShadow />
-      <directionalLight position={[-4, -5, -6]} intensity={0.6} color="#444444" castShadow />
-      <Cloud position={[0, 0, 0]} scale={[5, 5, 5]} opacity={0.15} speed={0.18} color="#777777" segments={28} />
+      <ambientLight intensity={0.12} />
+      <directionalLight position={[5, 6, 4]} intensity={0.2} color="#555555" castShadow />
+      <directionalLight position={[-4, -5, -6]} intensity={0.15} color="#707070" castShadow />
+      <Cloud position={[0, 0, -10]} scale={[8, 8, 8]} opacity={0.28} speed={0.35} color="#999999" segments={40} />
+
       <ExplodingSphere scrollRef={scrollRef} />
     </> 
   );
