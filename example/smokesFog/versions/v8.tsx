@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect, useState } from 'react'; // Grunnleggende React-hooks
+import { useRef, useMemo, useEffect } from 'react'; // Grunnleggende React-hooks
 import { Canvas, useFrame } from '@react-three/fiber'; // Canvas og animasjonsloop (React Three Fiber)
 import { Float, Cloud } from '@react-three/drei'; // Drei-hjelpere (Float, Cloud)
 import * as THREE from 'three'; // Three.js kjerne
@@ -23,28 +23,18 @@ interface FragmentData {
 const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => {
   const groupRef = useRef<THREE.Group>(null);
   const fragmentsRef = useRef<THREE.Mesh[]>([]);
-  
-  // Mobildeteksjon for posisjonering
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
   const innerCount = 120;
   const outerCount = 60;
-  // Fjernet ubrukt smoothProgressRef
+  // Removed unused smoothProgressRef
   const tmpPos = useRef(new THREE.Vector3());
   const tmpVel = useRef(new THREE.Vector3());
   const tmpNorm = useRef(new THREE.Vector3());
-  // Fjernet ubrukt cellSize og DAMP_LAMBDA
+  // Removed unused cellSize and DAMP_LAMBDA
   const SCROLL_INTENSITY = 0.45;
-  // Fjernet ubrukt ROTATION_RESPONSE
-  const EXPLOSION_DISTANCE = 1.2; // Øk spredningsavstand ved scroll
+  // Removed unused ROTATION_RESPONSE
+  const EXPLOSION_DISTANCE = 1.2; // Increase spread distance on scroll
 
-  // Seeded tilfeldig for deterministisk fragmentgenerering på tvers av oppdateringer
+  // Seeded random for deterministic fragment generation across refreshes
   const mulberry32 = (a: number) => {
     return () => {
       let t = (a += 0x6D2B79F5);
@@ -192,7 +182,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
 
   const fragmentGeometry = useMemo(() => new THREE.IcosahedronGeometry(1, 0), []);
 
-  // Fjernet ubrukt starGeometry
+  // Removed unused starGeometry
 
   const elasticOut = (t: number) => {
     const c4 = (2 * Math.PI) / 3;
@@ -200,16 +190,16 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
   };
 
   useFrame((state) => {
-    // Begrens delta for å forhindre inkonsekvent oppførsel under ytelsesfall
-    // Fjernet ubrukt dt
+    // Clamp delta to prevent inconsistent behavior during performance dips
+    // Removed unused dt
     const spScaled = Math.min(1, scrollRef.current * SCROLL_INTENSITY);
     if (groupRef.current) {
       const tt = state.clock.elapsedTime;
-      // Kontinuerlig en-retnings rotasjon (ingen oscillasjon)
+      // Continuous one-direction rotation (no oscillation)
       groupRef.current.rotation.x = tt * 0.08;
       groupRef.current.rotation.y = tt * 0.12;
       groupRef.current.rotation.z = tt * 0.04;
-      // Hold skala jevn (ingen pulsering)
+      // Keep scale steady (no breathing)
       groupRef.current.scale.set(1, 1, 1);
     }
     const t = state.clock.elapsedTime;
@@ -223,14 +213,14 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
       const clampedScroll = Math.min(spScaled, 1);
       mesh.position.copy(frag.originalPosition).lerp(explodedPos, clampedScroll);
       const normal = tmpNorm.current.copy(frag.originalPosition).normalize();
-      // Fjern oscillerende flyt; hold posisjon jevn (eksplosjon håndterer spredning)
+      // Remove oscillatory float; keep position steady (explosion handles spread)
       const floatOffsetAmount = 0;
       mesh.position.add(normal.multiplyScalar(floatOffsetAmount));
       frag.lastTarget.copy(mesh.position);
-      const movementIntensity = 0.5; // Fast hastighet for materialrespons
-      const scalePulse = 1; // Ingen frem-og-tilbake skalering
+      const movementIntensity = 0.5; // Fixed speed for material response
+      const scalePulse = 1; // No back-and-forth scaling
       mesh.scale.setScalar(frag.scale * scalePulse);
-      // En-retnings kontinuerlig rotasjon med begrensede, per-fragment hastigheter
+      // One-direction continuous rotation with bounded, per-fragment speeds
       const TWO_PI = Math.PI * 2;
       const baseSpeedX = 0.35;
       const baseSpeedY = 0.5;
@@ -280,7 +270,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         floatIntensity={0}
         floatingRange={[0, 0]}
       >
-        <group ref={groupRef} position={[0, isMobile ? 1.2 : 0, 0]} scale={1.1}>
+        <group ref={groupRef}>
           {fragments.map((frag, i) => (
           <mesh
             key={i}
@@ -310,9 +300,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
             />
           </mesh>
         ))}
-        {/* Punktlys litt utenfor sentrum for å eliminere sentral radial */}
-        <pointLight position={[0.2, 0.2, 0.2]} intensity={0.15} distance={20} decay={1.5} color="#ffa600" />
-        <ambientLight intensity={0.1} color="#703600" />
+        {/* Removed rotating point light to avoid inconsistent highlights */}
       </group>
     </Float>
     </>
@@ -333,19 +321,6 @@ const Scene = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => 
 
 export const HeroSphere = () => {
   const scrollRef = useRef(0);
-  
-  // Mobildeteksjon for responsiv kamera
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Mobilresponsive kamerainnstillinger - zoom ut
-  const cameraPosition = isMobile ? [0, 0, 9] as [number, number, number] : [0, 0, 6] as [number, number, number];
-  const cameraFov = isMobile ? 60 : 45;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -364,7 +339,7 @@ export const HeroSphere = () => {
   return (
     <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', pointerEvents: 'none' }}>
       <Canvas
-        camera={{ position: cameraPosition, fov: cameraFov }}
+        camera={{ position: [0, 0, 6], fov: 45 }}
         gl={{ antialias: true, alpha: false }}
         style={{ width: '100%', height: '100%', background: '#0a0a0a' }}
       >

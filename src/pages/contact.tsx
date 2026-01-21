@@ -42,7 +42,7 @@ const Contact: React.FC = () => {
 		try {
 			// Using environment variables for security
 			const result = await emailjs.send(
-				import.meta.env.VITE_EMAILJS_SERVICE_ID,
+				import.meta.env.VITE_EMAILJS_SERVICE_ID_PRO,
 				import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
 				{
 					from_name: formData.name,
@@ -128,8 +128,8 @@ const Contact: React.FC = () => {
 
 	const inputStyle: React.CSSProperties = {
 		width: '100%',
-		padding: '15px 20px',
-		margin: '12px 0',
+		padding: '15px 18px',
+		margin: '8px 0',
 		backgroundColor: 'rgba(233, 233, 233, 0.1)',
 		border: '1px solid rgba(233, 233, 233, 0.3)',
 		borderRadius: '8px',
@@ -151,7 +151,7 @@ const Contact: React.FC = () => {
 
 	const buttonStyle: React.CSSProperties = {
 		width: '100%',
-		padding: '15px 20px',
+		padding: '17px 20px 15px 20px',
 		margin: '24px 0 12px 0',
 		backgroundColor: 'rgba(233, 233, 233, 0.1)',
 		border: '1px solid rgba(233, 233, 233, 0.5)',
@@ -163,6 +163,11 @@ const Contact: React.FC = () => {
 		transition: 'all 0.3s ease',
 		textShadow: '0 0 5px rgba(233, 233, 233, 0.3)',
 		boxSizing: 'border-box',
+	};
+
+	const sendingTextStyle: React.CSSProperties = {
+		display: 'inline-block',
+		animation: 'wave 1.5s ease-in-out infinite',
 	};
 
 	const backButtonStyle: React.CSSProperties = {
@@ -182,11 +187,42 @@ const Contact: React.FC = () => {
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
+		textAlign: 'center',
+		lineHeight: '0',
 	};
 
 	return (
 		<main style={containerStyle}>
 			<Navbar />
+			
+			<style>
+				{`
+					@keyframes wave {
+						0%, 60%, 100% {
+							transform: translateY(0);
+						}
+						30% {
+							transform: translateY(-8px);
+						}
+					}
+					
+					.wave-text span {
+						display: inline-block;
+						animation: wave 1.5s ease-in-out infinite;
+					}
+					
+					.wave-text span:nth-child(1) { animation-delay: 0s; }
+					.wave-text span:nth-child(2) { animation-delay: 0.1s; }
+					.wave-text span:nth-child(3) { animation-delay: 0.2s; }
+					.wave-text span:nth-child(4) { animation-delay: 0.3s; }
+					.wave-text span:nth-child(5) { animation-delay: 0.4s; }
+					.wave-text span:nth-child(6) { animation-delay: 0.5s; }
+					.wave-text span:nth-child(7) { animation-delay: 0.6s; }
+					.wave-text span:nth-child(8) { animation-delay: 0.7s; }
+					.wave-text span:nth-child(9) { animation-delay: 0.8s; }
+					.wave-text span:nth-child(10) { animation-delay: 0.9s; }
+				`}
+			</style>
 			
 			<h1 style={titleStyle} onClick={handleEmailClick}>
 				hello@dvnny.no
@@ -264,7 +300,15 @@ const Contact: React.FC = () => {
 							}
 						}}
 					>
-						{isSubmitting ? 'Sending...' : 'Send Message'}
+						{isSubmitting ? (
+							<span className="wave-text">
+								{Array.from('Sending...').map((char, index) => (
+									<span key={index}>{char === ' ' ? '\u00A0' : char}</span>
+								))}
+							</span>
+						) : (
+							'Send Message'
+						)}
 					</button>
 					{submitStatus === 'error' && (
 						<div style={{
@@ -283,15 +327,13 @@ const Contact: React.FC = () => {
 						onMouseEnter={(e) => {
 							e.currentTarget.style.borderColor = 'rgba(233, 233, 233, 0.7)';
 							e.currentTarget.style.backgroundColor = 'rgba(233, 233, 233, 0.1)';
-							e.currentTarget.style.transform = 'scale(1.1)';
 						}}
 						onMouseLeave={(e) => {
 							e.currentTarget.style.borderColor = 'rgba(233, 233, 233, 0.3)';
 							e.currentTarget.style.backgroundColor = 'transparent';
-							e.currentTarget.style.transform = 'scale(1)';
 						}}
 					>
-						✕
+						<span style={{ transform: 'translateY(3px)' }}>✕</span>
 					</button>
 				</form>
 			

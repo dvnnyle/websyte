@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 
-const About: React.FC = () => {
+const Work: React.FC = () => {
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
@@ -11,10 +11,6 @@ const About: React.FC = () => {
 		}, 50);
 		return () => clearTimeout(timer);
 	}, []);
-
-	const handleNameClick = () => {
-		window.open('https://linkedin.com/in/dvnnyle', '_blank');
-	};
 
 	const containerStyle: React.CSSProperties = {
 		position: 'relative',
@@ -46,20 +42,40 @@ const About: React.FC = () => {
 			: 'none',
 		filter: isVisible ? 'blur(0px)' : 'blur(2px)',
 		zIndex: 10,
-		cursor: 'pointer',
+	};
+
+	const subtitleStyle: React.CSSProperties = {
+		color: '#e9e9e9',
+		fontSize: '1.2rem',
+		fontWeight: 400,
+		letterSpacing: '0.1px',
+		position: 'fixed',
+		top: '50%',
+		left: '50%',
+		transform: isVisible 
+			? 'translate(-50%, -50%) translateY(0) scale(1)' 
+			: 'translate(-50%, -50%) translateY(20px) scale(0.95)',
+		transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+		opacity: isVisible ? 0.7 : 0,
+		filter: isVisible ? 'blur(0px)' : 'blur(2px)',
+		zIndex: 10,
 	};
 
 	return (
 		<main style={containerStyle}>
 			<Navbar />
 			
-			<h1 style={titleStyle} onClick={handleNameClick}>
-				Danny
+			<h1 style={titleStyle}>
+				updating
 			</h1>
+			
+			<p style={subtitleStyle}>
+				coming soon
+			</p>
 			
 			<Footer />
 		</main>
 	);
 };
 
-export default About;
+export default Work;
