@@ -44,7 +44,7 @@
 /* App fade-in animation for first visit */
 .app-container {
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .app-container.fade-in {
