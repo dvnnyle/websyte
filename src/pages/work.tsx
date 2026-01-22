@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar';
-import { IoClose, IoArrowBack, IoArrowForward } from 'react-icons/io5';
 
 const Work: React.FC = () => {
 	const [isVisible, setIsVisible] = useState(false);
@@ -105,51 +104,6 @@ const Work: React.FC = () => {
 
 	};
 
-	const projectDescStyle: React.CSSProperties = {
-		color: '#e9e9e9',
-		opacity: 0.7,
-		fontSize: '0.95rem',
-		lineHeight: 1.5,
-		marginBottom: '16px',
-	};
-
-	const projectMetaStyle: React.CSSProperties = {
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		marginBottom: '16px',
-	};
-
-	const categoryStyle: React.CSSProperties = {
-		background: 'rgba(255, 255, 255, 0.1)',
-		color: '#e9e9e9',
-		padding: '4px 12px',
-		borderRadius: '20px',
-		fontSize: '0.8rem',
-		fontWeight: 500,
-	};
-
-	const statusStyle: React.CSSProperties = {
-		color: '#4ade80',
-		fontSize: '0.8rem',
-		fontWeight: 500,
-	};
-
-	const techStackStyle: React.CSSProperties = {
-		display: 'flex',
-		flexWrap: 'wrap',
-		gap: '6px',
-	};
-
-	const techTagStyle: React.CSSProperties = {
-		background: 'rgba(100, 108, 255, 0.2)',
-		color: '#818cf8',
-		padding: '2px 8px',
-		borderRadius: '12px',
-		fontSize: '0.75rem',
-		fontWeight: 500,
-	};
-
 	// Modal styles
 	const modalOverlayStyle: React.CSSProperties = {
 		position: 'fixed',
@@ -234,7 +188,7 @@ const Work: React.FC = () => {
 					marginBottom: '20px',
 					textShadow: '0 0 20px rgba(233, 233, 233, 0.3)',
 				}}>
-					Tounaop
+					Toumao
 				</h2>
 				<p style={{ 
 					color: '#e9e9e9', 
