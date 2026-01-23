@@ -13,7 +13,7 @@ const About: React.FC = () => {
 	}, []);
 
 	const handleNameClick = () => {
-		window.open('https://linkedin.com/in/dvnnyle', '_blank');
+		window.open('https://www.linkedin.com/in/danny-nguyen-le-98808221b/', '_blank');
 	};
 
 	const containerStyle: React.CSSProperties = {

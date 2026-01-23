@@ -50,7 +50,7 @@ const Footer: React.FC = () => {
 				<div className="social-links">
 					<a href="https://www.linkedin.com/in/danny-nguyen-le-98808221b/" target="_blank" rel="noopener noreferrer" className="social-text">LinkedIn</a>
 					<a href="https://instagram.com/dvnnyle/" target="_blank" rel="noopener noreferrer" className="social-text">Instagram</a>
-					<a href="https://twitter.com/Dvrcht" target="_blank" rel="noopener noreferrer" className="social-text">Twitter</a>
+					<a href="https://x.com/Dvnnyle" target="_blank" rel="noopener noreferrer" className="social-text">Twitter X</a>
 				</div>
 				{showToast && (
 					<div className="toast">
