@@ -56,7 +56,7 @@ const Work: React.FC = () => {
 			description: 'Interactive mindmap and visualization platform',
 			category: 'Web Development',
 			technologies: ['React', 'TypeScript', 'D3.js', 'Node.js'],
-			image: 'src/portfolio/images/toumaopreview.png',
+			image: '/portfolio/images/toumaopreview.png',
 			status: 'In Development'
 		},
 		{
@@ -65,7 +65,7 @@ const Work: React.FC = () => {
 			description: 'Modern web application with innovative design',
 			category: 'Web Development',
 			technologies: ['React', 'TypeScript', 'CSS3'],
-			image: 'src/portfolio/images/mgekopreview.png',
+			image: '/portfolio/images/mgekopreview.png',
 			status: 'Completed'
 		}
 	];
@@ -197,13 +197,13 @@ const Work: React.FC = () => {
 		const [isLoading, setIsLoading] = useState(true);
 		
 		const projectImages = [
-			'src/portfolio/mgeko/mgeko vid.mp4',
-			'src/portfolio/images/mgekopreview.png',
-			'src/portfolio/mgeko/home.png',
-			'src/portfolio/mgeko/browse.png',
-			'src/portfolio/mgeko/bookmarks.png',
-			'src/portfolio/mgeko/mgeko_read.png',
-			'src/portfolio/mgeko/mgeko_viewer.png',
+			'/portfolio/mgeko/mgeko vid.mp4',
+			'/portfolio/images/mgekopreview.png',
+			'/portfolio/mgeko/home.png',
+			'/portfolio/mgeko/browse.png',
+			'/portfolio/mgeko/bookmarks.png',
+			'/portfolio/mgeko/mgeko_read.png',
+			'/portfolio/mgeko/mgeko_viewer.png',
 		];
 
 		const nextImage = () => {
@@ -439,11 +439,11 @@ const Work: React.FC = () => {
 		const [isLoading, setIsLoading] = useState(true);
 		
 		const projectImages = [
-			'src/portfolio/images/mock3.png',
-			'src/portfolio/images/Screenshot_14.png',
-			'src/portfolio/images/tounao1.png',
-			'src/portfolio/images/Screenshot_16.png',
-			'src/portfolio/images/t2.png',
+			'/portfolio/images/mock3.png',
+			'/portfolio/images/Screenshot_14.png',
+			'/portfolio/images/tounao1.png',
+			'/portfolio/images/Screenshot_16.png',
+			'/portfolio/images/t2.png',
 		];
 
 		const nextImage = () => {
