@@ -56,7 +56,7 @@ const Work: React.FC = () => {
 			description: 'Interactive mindmap and visualization platform',
 			category: 'Web Development',
 			technologies: ['React', 'TypeScript', 'D3.js', 'Node.js'],
-			image: '/portfolio/images/toumaopreview.png',
+			image: '/portfolio/toumao/toumaoNew.png',
 			status: 'In Development'
 		},
 		{
@@ -65,8 +65,17 @@ const Work: React.FC = () => {
 			description: 'Modern web application with innovative design',
 			category: 'Web Development',
 			technologies: ['React', 'TypeScript', 'CSS3'],
-			image: '/portfolio/images/mgekopreview.png',
+			image: '/portfolio/mgeko/mgekoNew.png',
 			status: 'Completed'
+		},
+		{
+			id: 'scandish',
+			title: 'Scandish',
+			description: 'PWA app for OCR scanning recipes and making them digital',
+			category: 'Mobile Development',
+			technologies: ['React', 'PWA', 'OCR', 'TypeScript'],
+			image: '/portfolio/scandish/Sdbg 1.png',
+			status: 'In Development'
 		}
 	];
 
@@ -635,6 +644,206 @@ const Work: React.FC = () => {
 	);
 };
 
+	// Scandish project detailed content
+	const ScandishModal = () => {
+		const [currentImageIndex, setCurrentImageIndex] = useState(0);
+		const [isLoading, setIsLoading] = useState(true);
+		
+		const projectImages = [
+			'/portfolio/scandish/Sdbg 1.png',
+			'/portfolio/scandish/sdPho 1.png',
+			'/portfolio/scandish/qr kode.png',
+		];
+
+		const nextImage = () => {
+			setIsLoading(true);
+			setCurrentImageIndex((prev) => (prev + 1) % projectImages.length);
+		};
+
+		const prevImage = () => {
+			setIsLoading(true);
+			setCurrentImageIndex((prev) => (prev - 1 + projectImages.length) % projectImages.length);
+		};
+
+		const skeletonStyle: React.CSSProperties = {
+			position: 'absolute',
+			top: 0,
+			left: 0,
+			width: '100%',
+			height: '400px',
+			background: 'linear-gradient(90deg, rgba(26, 26, 26, 0.8) 25%, rgba(40, 40, 40, 0.8) 50%, rgba(26, 26, 26, 0.8) 75%)',
+			backgroundSize: '200% 100%',
+			animation: 'shimmer 2s infinite',
+			display: isLoading ? 'block' : 'none',
+			zIndex: 2,
+			borderRadius: '12px',
+		};
+
+		return (
+			<div>
+				<h2 style={{ 
+					color: '#e9e9e9', 
+					fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', 
+					fontWeight: 600, 
+					marginBottom: 'clamp(12px, 3vw, 20px)',
+					textShadow: '0 0 20px rgba(233, 233, 233, 0.3)',
+				}}>
+					Scandish
+				</h2>
+				<p style={{ 
+					color: '#e9e9e9', 
+					opacity: 0.8, 
+					fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)', 
+					lineHeight: 1.6, 
+					marginBottom: 'clamp(20px, 4vw, 30px)'
+				}}>
+					A Progressive Web App that uses OCR technology to scan physical recipes and convert them into digital format. Features include recipe scanning, ingredient recognition, and digital recipe management.
+				</p>
+
+				{/* Image Carousel */}
+				<div style={{ 
+					marginBottom: '40px',
+					position: 'relative',
+					borderRadius: '12px',
+					overflow: 'hidden',
+					boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+				}}>
+					<div style={skeletonStyle} />
+					<img 
+						src={projectImages[currentImageIndex]} 
+						alt={`Scandish Interface ${currentImageIndex + 1}`}
+						onLoad={() => setIsLoading(false)}
+						style={{ 
+							width: '100%', 
+							maxHeight: '400px',
+							height: 'auto',
+							objectFit: 'contain',
+							display: 'block',
+							backgroundColor: '#1a1a1a',
+							opacity: isLoading ? 0 : 1,
+							transition: 'opacity 0.3s ease'
+						}}
+					/>
+					
+					{/* Navigation buttons */}
+					{projectImages.length > 1 && (
+						<>
+							<button
+								onClick={prevImage}
+								style={{
+									position: 'absolute',
+									left: '10px',
+									top: '50%',
+									transform: 'translateY(-50%)',
+									background: 'rgba(0, 0, 0, 0.7)',
+									border: 'none',
+									borderRadius: '50%',
+									width: '40px',
+									height: '40px',
+									color: '#e9e9e9',
+									fontSize: '18px',
+									cursor: 'pointer',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									transition: 'all 0.2s ease'
+								}}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.background = 'rgba(0, 0, 0, 0.9)';
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.background = 'rgba(0, 0, 0, 0.7)';
+								}}
+							>
+								<span style={{
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									lineHeight: 1,
+									fontSize: '16px',
+									transform: 'translateY(-1px)'
+								}}>◀</span>
+							</button>
+							<button
+								onClick={nextImage}
+								style={{
+									position: 'absolute',
+									right: '10px',
+									top: '50%',
+									transform: 'translateY(-50%)',
+									background: 'rgba(0, 0, 0, 0.7)',
+									border: 'none',
+									borderRadius: '50%',
+									width: '40px',
+									height: '40px',
+									color: '#e9e9e9',
+									fontSize: '18px',
+									cursor: 'pointer',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									transition: 'all 0.2s ease'
+								}}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.background = 'rgba(0, 0, 0, 0.9)';
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.background = 'rgba(0, 0, 0, 0.7)';
+								}}
+							>
+								<span style={{
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									lineHeight: 1,
+									fontSize: '16px',
+									transform: 'translateY(-1px)'
+								}}>▶</span>
+							</button>
+						</>
+					)}
+				</div>
+
+				<div style={{ 
+					display: 'flex', 
+					flexDirection: 'column',
+					gap: '10px', 
+					alignItems: 'center' 
+				}}>
+					<a 
+						href="https://scandish.dvnny.no/" 
+						target="_blank" 
+						rel="noopener noreferrer"
+						style={{
+							background: 'linear-gradient(135deg, #646cff 0%, #5a67d8 100%)',
+							color: 'white',
+							border: 'none',
+							padding: '12px 24px',
+							borderRadius: '8px',
+							fontWeight: 600,
+							cursor: 'pointer',
+							transition: 'all 0.2s ease',
+							fontSize: '0.95rem',
+							textDecoration: 'none',
+							display: 'inline-block'
+						}}
+					>
+						check it out
+					</a>
+					<p style={{
+						color: '#e9e9e9',
+						opacity: 0.6,
+						fontSize: '0.8rem',
+						margin: 0,
+						fontStyle: 'italic'
+					}}>
+						might be buggy under
+					</p>
+				</div>
+			</div>
+		);
+	};
+
 	return (
 		<div id="work-container" className="work-container" style={containerStyle}>
 			<Navbar />
@@ -653,7 +862,7 @@ const Work: React.FC = () => {
 						}}
 						onMouseEnter={() => setSelectedProject(project.id)}
 						onMouseLeave={() => setSelectedProject(null)}
-						onClick={() => ['toumao', 'mgeko'].includes(project.id) ? openModal(project.id) : null}
+						onClick={() => ['toumao', 'mgeko', 'scandish'].includes(project.id) ? openModal(project.id) : null}
 					>
 						<img 
 							id={`${project.id}-image`}
@@ -690,6 +899,7 @@ const Work: React.FC = () => {
 					</button>
 					{modalProject === 'toumao' && <ToumaoModal />}
 					{modalProject === 'mgeko' && <MgekoModal />}
+					{modalProject === 'scandish' && <ScandishModal />}
 				</div>
 			</div>
 		</div>
