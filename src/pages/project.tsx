@@ -1,5 +1,4 @@
 
-import React from "react";
 import "./project.css";
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
@@ -23,51 +22,42 @@ const projects = [
 		image: "/portfolio/scandish/Sdbg 1.png",
 		link: "https://scandish.dvnny.no/"
 	},
-	{
-		title: "Coming Soon",
-		description: "New project in development",
-		image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
-		link: "#"
+		{
+		title: "Playworld Website",
+		description: "Design example",
+		image: "/portfolio/playworld/playworldPreview.png",
+		link: "https://coyote.dvnny.no/",
+		status: "In Development"
 	},
 	{
-		title: "Coming Soon",
-		description: "New project in development",
-		image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80",
-		link: "#"
-	},
-	{
-		title: "Coming Soon",
-		description: "New project in development",
-		image: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=800&q=80",
-		link: "#"
+		title: "Playworld PWA",
+		description: "Progressive web application",
+		image: "/portfolio/app1/appPreviewPW.png",
+		link: "#",
+		status: "In Development"
 	}
 ];
 
 const appDevelopment = [
 	{
-		title: "Coming Soon",
-		description: "New app in development",
+		title: "Playworld PWA",
+		description: "Progressive web application",
+		image: "/portfolio/app1/appPreviewPW.png",
+		link: "#",
+		status: "In Development"
+	},
+	{
+		title: "HomeAbroad",
+		description: "Mobile application project",
 		image: "/portfolio/app1/NOWAY.png",
-		link: "#"
-	},
-	{
-		title: "Coming Soon",
-		description: "New app in development",
-		image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80",
-		link: "#"
-	},
-	{
-		title: "Coming Soon",
-		description: "New app in development",
-		image: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=800&q=80",
 		link: "#"
 	}
 ];
 
 const practical = [
 	{
-		title: "IT Pro",
-		description: "IT professional project",
+		title: "MMD-IT Internship",
+		description: "Multimedia project",
 		image: "/portfolio/itPro/itProPewview.png",
 		link: "#"
 	}
@@ -90,18 +80,25 @@ const ProjectPage = () => {
 				</div>
 
 				{/* Right column: Project grid (3 columns) */}
-				<div className="projects-grid">
+				<div className="projects-grid projects-grid-single">
 					{projects.map((proj, idx) => (
 						<a
 							key={idx}
 							href={proj.link}
 							className="project-card"
+							target="_blank"
+							rel="noopener noreferrer"
 						>
 							<img
 								src={proj.image}
 								alt={proj.title}
 								className="project-image"
 							/>
+							{proj.status && (
+								<div className="project-status-pill">
+									{proj.status}
+								</div>
+							)}
 							<div className="project-overlay">
 								<h3 className="project-title">
 									{proj.title}
@@ -122,26 +119,33 @@ const ProjectPage = () => {
 				{/* Left column: Title and description */}
 				<div className="projects-info-column">
 					<h1 className="projects-title">
-						App Development
+						Applications
 					</h1>
 					<p className="projects-description">
-						Mobile and desktop applications showcasing innovative solutions.
+						Mobile applications showcasing innovative solutions.
 					</p>
 				</div>
 
 				{/* Right column: Project grid (3 columns) */}
-				<div className="projects-grid">
+				<div className="projects-grid projects-grid-single">
 					{appDevelopment.map((proj, idx) => (
 						<a
 							key={idx}
 							href={proj.link}
 							className="project-card"
+							target="_blank"
+							rel="noopener noreferrer"
 						>
 							<img
 								src={proj.image}
 								alt={proj.title}
 								className="project-image"
 							/>
+							{proj.status && (
+								<div className="project-status-pill">
+									{proj.status}
+								</div>
+							)}
 							<div className="project-overlay">
 								<h3 className="project-title">
 									{proj.title}
@@ -176,6 +180,8 @@ const ProjectPage = () => {
 							key={idx}
 							href={proj.link}
 							className="project-card"
+							target="_blank"
+							rel="noopener noreferrer"
 						>
 							<img
 								src={proj.image}
