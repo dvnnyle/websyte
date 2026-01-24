@@ -1,8 +1,7 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .logo {
@@ -41,13 +40,8 @@
   color: #888;
 }
 
-/* App fade-in animation for first visit */
+/* App container */
 .app-container {
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.app-container.fade-in {
   opacity: 1;
 }
 

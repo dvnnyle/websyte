@@ -363,7 +363,7 @@ export const HeroSphere = () => {
   }, []);
 
   return (
-    <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', pointerEvents: 'none' }}>
+    <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 1 }}>
       <Canvas
         camera={{ position: cameraPosition, fov: cameraFov }}
         gl={{ antialias: true, alpha: false }}
