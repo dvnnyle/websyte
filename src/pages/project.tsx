@@ -16,18 +16,25 @@ const projects = [
 		image: "/portfolio/mgeko/mgekoNew.png",
 		link: "https://mgeko.dvnny.no/"
 	},
+	
 	{
 		title: "Scandish",
 		description: "PWA app for OCR scanning recipes and making them digital",
 		image: "/portfolio/scandish/Sdbg 1.png",
 		link: "https://scandish.dvnny.no/"
 	},
-		{
+	{
 		title: "Playworld Website",
 		description: "Design example",
 		image: "/portfolio/playworld/playworldPreview.png",
 		link: "https://coyote.dvnny.no/",
 		status: "In Development"
+	},
+	{
+		title: "Scandish Website",
+		description: "Website for Scandish",
+		image: "/portfolio/scandish/scandishWeb.png",
+		link: "#"
 	},
 	{
 		title: "Playworld PWA",
