@@ -7,7 +7,6 @@ import * as THREE from 'three'; // Three.js kjerne
 interface FragmentData {
   position: THREE.Vector3;
   originalPosition: THREE.Vector3;
-  startPosition: THREE.Vector3;
   velocity: THREE.Vector3;
   rotation: THREE.Euler;
   rotationSpeed: THREE.Vector3;
@@ -83,12 +82,9 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
       velocity.y += (rand() - 0.5) * 0.4;
       velocity.z += (rand() - 0.5) * 0.4;
       const scale = (0.48 + rand() * 0.22) * 0.65;
-      // Start position is far outside, moving inward
-      const startPos = originalPos.clone().normalize().multiplyScalar(8 + rand() * 4);
       frags.push({
         position: originalPos.clone(),
         originalPosition: originalPos.clone(),
-        startPosition: startPos,
         velocity,
         rotation: new THREE.Euler(
           rand() * Math.PI * 2,
@@ -129,12 +125,9 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         : rScale < 0.35
           ? 0.03 + rand() * 0.05
           : 0.08 + rand() * 0.12;
-      // Start position is far outside
-      const startPos = originalPos.clone().normalize().multiplyScalar(8 + rand() * 4);
       frags.push({
         position: originalPos.clone(),
         originalPosition: originalPos.clone(),
-        startPosition: startPos,
         velocity,
         rotation: new THREE.Euler(
           rand() * Math.PI * 2,
@@ -173,12 +166,9 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
       const scaleOuter = rScaleOuter < 0.8
         ? 0.02 + rand() * 0.04
         : 0.05 + rand() * 0.06;
-      // Start position for outer fragments
-      const startPos = originalPos.clone().normalize().multiplyScalar(10 + rand() * 3);
       frags.push({
         position: originalPos.clone(),
         originalPosition: originalPos.clone(),
-        startPosition: startPos,
         velocity,
         rotation: new THREE.Euler(
           rand() * Math.PI * 2,
@@ -233,24 +223,17 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
       
       // Calculate individual fade-in progress for this fragment
       const fadeInStart = frag.fadeInDelay;
-      const fadeInDuration = 0.6;
+      const fadeInDuration = 0.4;
       const individualFadeIn = Math.min(Math.max((t - fadeInStart) / fadeInDuration, 0), 1);
       
-      // Smooth easing for the assembly animation
-      const easeProgress = individualFadeIn < 0.5 
-        ? 2 * individualFadeIn * individualFadeIn 
-        : 1 - Math.pow(-2 * individualFadeIn + 2, 2) / 2;
-      
-      // Move from start position (outside) to original position (sphere)
-      const assembledPos = tmpPos.current.copy(frag.startPosition).lerp(frag.originalPosition, easeProgress);
-      
-      // Then apply explosion based on scroll
+      // Regular explosion animation (no assembly movement)
       const explodeFactor = elasticOut(spScaled) * (frag.explodeMultiplier ?? 1);
-      const explodedPos = tmpVel.current.copy(frag.originalPosition).add(
-        tmpNorm.current.copy(frag.velocity).multiplyScalar(explodeFactor * EXPLOSION_DISTANCE)
+      const explodedPos = tmpPos.current.copy(frag.originalPosition).add(
+        tmpVel.current.copy(frag.velocity).multiplyScalar(explodeFactor * EXPLOSION_DISTANCE)
       );
       const clampedScroll = Math.min(spScaled, 1);
-      mesh.position.copy(assembledPos).lerp(explodedPos, clampedScroll);
+      mesh.position.copy(frag.originalPosition).lerp(explodedPos, clampedScroll);
+      
       const normal = tmpNorm.current.copy(frag.originalPosition).normalize();
       // Fjern oscillerende flyt; hold posisjon jevn (eksplosjon håndterer spredning)
       const floatOffsetAmount = 0;
@@ -258,7 +241,6 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
       frag.lastTarget.copy(mesh.position);
       const movementIntensity = 0.5; // Fast hastighet for materialrespons
       const scalePulse = 1; // Ingen frem-og-tilbake skalering
-      // mesh.scale.setScalar(frag.scale * scalePulse); // Moved below to include fade-in scale
       // En-retnings kontinuerlig rotasjon med begrensede, per-fragment hastigheter
       const TWO_PI = Math.PI * 2;
       const baseSpeedX = 0.35;
@@ -367,7 +349,7 @@ const Scene = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => 
   );
 };
 
-export const HeroSphere = () => {
+export const HeroSphereCascade = () => {
   const scrollRef = useRef(0);
   
   // Mobildeteksjon for responsiv kamera
@@ -410,4 +392,3 @@ export const HeroSphere = () => {
     </div>
   );
 };
-
