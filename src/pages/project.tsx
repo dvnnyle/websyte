@@ -47,7 +47,7 @@ const practical = [
 		title: "MMD-IT Internship",
 		description: "Multimedia project",
 		image: "/portfolio/itPro/itProPewview.png",
-		link: "#"
+		link: "/itpro"
 	}
 ];
 

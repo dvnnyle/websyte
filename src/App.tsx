@@ -7,6 +7,7 @@ import Contact from './pages/contact'
 import About from './pages/about'
 import Work from './pages/work'
 import ProjectPage from './pages/project';
+import ITPro from './pages/itpro';
 
 function AppContent() {
   return (
@@ -23,6 +24,7 @@ function AppContent() {
         <Route path="/about" element={<About />} />
         <Route path="/work" element={<Work />} />
         <Route path="/project" element={<ProjectPage />} />
+        <Route path="/itpro" element={<ITPro />} />
       </Routes>
     </div>
   );

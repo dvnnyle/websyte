@@ -1,0 +1,68 @@
+/* IT Pro Page - Card Format */
+.itpro-page {
+  min-height: 100vh;
+  background: transparent;
+  position: relative;
+  z-index: 10;
+}
+
+.itpro-main {
+  padding-top: 100px;
+  padding-bottom: 2rem;
+  min-height: calc(100vh - 100px);
+  position: relative;
+  z-index: 11;
+}
+
+.itpro-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 12;
+}
+
+/* PDF Viewer Card */
+.pdf-viewer {
+  width: 100%;
+  height: 80vh;
+  min-height: 600px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  position: relative;
+  z-index: 15;
+}
+
+.pdf-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  position: relative;
+  z-index: 16;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .itpro-content {
+    padding: 0 1rem;
+  }
+  
+  .pdf-viewer {
+    height: 70vh;
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 480px) {
+  .itpro-main {
+    padding-top: 90px;
+  }
+  
+  .pdf-viewer {
+    height: 60vh;
+    min-height: 400px;
+  }
+}
