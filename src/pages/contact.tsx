@@ -197,11 +197,6 @@ const Contact: React.FC = () => {
 
 	 return (
 	 		<main style={containerStyle}>
-	 			<Seo
-	 				title="Contact | Danny Nguyen Le"
-	 				description="Get in touch to ask questions, share ideas, or start a conversation."
-	 				canonical={`${SITE}/contact`}
-	 			/>
 	 			<Navbar />
 	 			<style>
 	 				{`

@@ -89,18 +89,185 @@ const desktopWebApps = [
 ];
 
 const ProjectPage = () => {
-  useSeo({
-    title: "Projects | Danny Nguyen Le",
-    description: "A closer look at a project — how it was built, what was learned, and the ideas behind the work.",
-    canonical: `${SITE}/project`,
-  });
-  return (
-    <>
-      <Navbar />
-      {/* ...existing code... */}
-      <Footer />
-    </>
-  );
+	useSeo({
+		title: "Projects | Danny Nguyen Le",
+		description: "A closer look at a project — how it was built, what was learned, and the ideas behind the work.",
+		canonical: `${SITE}/project`,
+	});
+	return (
+		<>
+			<Navbar />
+			<section className="projects-section">
+				<div className="projects-container">
+					{/* Left column: Title and description */}
+					<div className="projects-info-column">
+						<h1 className="projects-title">
+							Ongoing Projects
+						</h1>
+						<p className="projects-description">
+							A collection of recent work, digital products, and creative explorations.
+						</p>
+					</div>
+					{/* Right column: Project grid (3 columns) */}
+					<div className="projects-grid projects-grid-single">
+						{projects.map((proj, idx) => (
+							<a
+								key={idx}
+								href={proj.link}
+								className="project-card"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<img
+									src={proj.image}
+									alt={proj.title}
+									className="project-image"
+								/>
+								{proj.status && (
+									<div className="project-status-pill">
+										{proj.status}
+									</div>
+								)}
+								<div className="project-overlay">
+									<h3 className="project-title">
+										{proj.title}
+									</h3>
+									<p className="project-description">
+										{proj.description}
+									</p>
+								</div>
+							</a>
+						))}
+					</div>
+				</div>
+			</section>
+			{/* Desktop Web Apps Section */}
+			<section className="projects-section">
+				<div className="projects-container">
+					<div className="projects-info-column">
+						<h1 className="projects-title">
+							Desktop Web Apps
+						</h1>
+						<p className="projects-description">
+							Interactive desktop-style web applications and productivity tools.
+						</p>
+					</div>
+					<div className="projects-grid projects-grid-single">
+						{desktopWebApps.map((proj, idx) => (
+							<a
+								key={idx}
+								href={proj.link}
+								className="project-card"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<img
+									src={proj.image}
+									alt={proj.title}
+									className="project-image"
+								/>
+								{proj.status && (
+									<div className="project-status-pill">
+										{proj.status}
+									</div>
+								)}
+								<div className="project-overlay">
+									<h3 className="project-title">
+										{proj.title}
+									</h3>
+									<p className="project-description">
+										{proj.description}
+									</p>
+								</div>
+							</a>
+						))}
+					</div>
+				</div>
+			</section>
+			{/* App Development Section */}
+			<section className="projects-section">
+				<div className="projects-container">
+					<div className="projects-info-column">
+						<h1 className="projects-title">
+							Applications
+						</h1>
+						<p className="projects-description">
+							Mobile applications showcasing innovative solutions.
+						</p>
+					</div>
+					<div className="projects-grid projects-grid-single">
+						{appDevelopment.map((proj, idx) => (
+							<a
+								key={idx}
+								href={proj.link}
+								className="project-card"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<img
+									src={proj.image}
+									alt={proj.title}
+									className="project-image"
+								/>
+								{proj.status && (
+									<div className="project-status-pill">
+										{proj.status}
+									</div>
+								)}
+								<div className="project-overlay">
+									<h3 className="project-title">
+										{proj.title}
+									</h3>
+									<p className="project-description">
+										{proj.description}
+									</p>
+								</div>
+							</a>
+						))}
+					</div>
+				</div>
+			</section>
+			{/* Practical Section */}
+			<section className="projects-section">
+				<div className="projects-container">
+					<div className="projects-info-column">
+						<h1 className="projects-title">
+							Practical
+						</h1>
+						<p className="projects-description">
+							Hands-on projects and practical implementations.
+						</p>
+					</div>
+					<div className="projects-grid projects-grid-single">
+						{practical.map((proj, idx) => (
+							<a
+								key={idx}
+								href={proj.link}
+								className="project-card"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<img
+									src={proj.image}
+									alt={proj.title}
+									className="project-image"
+								/>
+								<div className="project-overlay">
+									<h3 className="project-title">
+										{proj.title}
+									</h3>
+									<p className="project-description">
+										{proj.description}
+									</p>
+								</div>
+							</a>
+						))}
+					</div>
+				</div>
+			</section>
+			<Footer />
+		</>
+	);
 };
 };
 
