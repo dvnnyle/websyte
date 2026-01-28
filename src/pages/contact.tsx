@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
-import Seo from '../components/Seo';
+import { useSeo } from '../components/Seo';
 
 const SITE = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
 
@@ -16,6 +16,12 @@ const Contact: React.FC = () => {
 		name: '',
 		email: '',
 		message: ''
+	});
+
+	useSeo({
+		title: "Contact | Danny Nguyen Le",
+		description: "Contact Danny Nguyen Le for collaborations, questions, or project inquiries.",
+		canonical: `${SITE}/contact`,
 	});
 
 	useEffect(() => {

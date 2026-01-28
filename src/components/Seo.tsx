@@ -1,29 +1,34 @@
-import { Helmet } from "react-helmet-async";
+// src/components/useSeo.ts
+import { useEffect } from "react";
 
-type SeoProps = {
+type SeoArgs = {
   title: string;
   description: string;
   canonical?: string;
-  ogImage?: string;
 };
 
-export default function Seo({ title, description, canonical, ogImage }: SeoProps) {
-  return (
-    <Helmet>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+export function useSeo({ title, description, canonical }: SeoArgs) {
+  useEffect(() => {
+    document.title = title;
 
-      {canonical ? <link rel="canonical" href={canonical} /> : null}
+    // description
+    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "description";
+      document.head.appendChild(meta);
+    }
+    meta.content = description;
 
-      {/* Open Graph */}
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:type" content="website" />
-      {canonical ? <meta property="og:url" content={canonical} /> : null}
-      {ogImage ? <meta property="og:image" content={ogImage} /> : null}
-
-      {/* Twitter */}
-      <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
-    </Helmet>
-  );
+    // canonical
+    if (canonical) {
+      let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "canonical";
+        document.head.appendChild(link);
+      }
+      link.href = canonical;
+    }
+  }, [title, description, canonical]);
 }

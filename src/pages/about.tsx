@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
-import Seo from '../components/Seo';
+import { useSeo } from '../components/Seo';
 
 const SITE = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
 
 const About: React.FC = () => {
 	const [isVisible, setIsVisible] = useState(false);
+
+	useSeo({
+		title: "About | Danny Nguyen Le",
+		description: "About Danny Nguyen Le - All rounder developer, designer, and creative person",
+		canonical: `${SITE}/about`,
+	});
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -52,20 +58,15 @@ const About: React.FC = () => {
 		cursor: 'pointer',
 	};
 
-	 return (
-	 	<main style={containerStyle}>
-	 		<Seo
-	 			title="About | Danny Nguyen Le"
-	 			description="About Danny Nguyen Le - All rounder developer, designer, and creative person"
-	 			canonical={`${SITE}/about`}
-	 		/>
-	 		<Navbar />
-	 		<h1 style={titleStyle} onClick={handleNameClick}>
-	 			Danny
-	 		</h1>
-	 		<Footer />
-	 	</main>
-	 );
+	return (
+		<main style={containerStyle}>
+			<Navbar />
+			<h1 style={titleStyle} onClick={handleNameClick}>
+				Danny
+			</h1>
+			<Footer />
+		</main>
+	);
 };
 
 export default About;
