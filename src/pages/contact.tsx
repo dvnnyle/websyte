@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
+import Seo from '../components/Seo';
+
+const SITE = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
 
 const Contact: React.FC = () => {
 	const [isVisible, setIsVisible] = useState(false);
@@ -186,161 +189,161 @@ const Contact: React.FC = () => {
 		lineHeight: '0',
 	};
 
-	return (
-		<main style={containerStyle}>
-			<Navbar />
-			
-			<style>
-				{`
-					@keyframes wave {
-						0%, 60%, 100% {
-							transform: translateY(0);
-						}
-						30% {
-							transform: translateY(-8px);
-						}
-					}
-					
-					.wave-text span {
-						display: inline-block;
-						animation: wave 1.5s ease-in-out infinite;
-					}
-					
-					.wave-text span:nth-child(1) { animation-delay: 0s; }
-					.wave-text span:nth-child(2) { animation-delay: 0.1s; }
-					.wave-text span:nth-child(3) { animation-delay: 0.2s; }
-					.wave-text span:nth-child(4) { animation-delay: 0.3s; }
-					.wave-text span:nth-child(5) { animation-delay: 0.4s; }
-					.wave-text span:nth-child(6) { animation-delay: 0.5s; }
-					.wave-text span:nth-child(7) { animation-delay: 0.6s; }
-					.wave-text span:nth-child(8) { animation-delay: 0.7s; }
-					.wave-text span:nth-child(9) { animation-delay: 0.8s; }
-					.wave-text span:nth-child(10) { animation-delay: 0.9s; }
-				`}
-			</style>
-			
-			<h1 style={titleStyle} onClick={handleEmailClick}>
-				hello@dvnny.no
-			</h1>
-			
-			<form style={formStyle} onSubmit={handleSubmit}>
-					<input
-						type="text"
-						name="name"
-						placeholder="Your Name"
-						value={formData.name}
-						onChange={handleInputChange}
-						style={inputStyle}
-						onFocus={(e) => {
-							e.target.style.borderColor = 'rgba(233, 233, 233, 0.6)';
-							e.target.style.boxShadow = '0 0 10px rgba(233, 233, 233, 0.2)';
-						}}
-						onBlur={(e) => {
-							e.target.style.borderColor = 'rgba(233, 233, 233, 0.3)';
-							e.target.style.boxShadow = '0 0 0 rgba(233, 233, 233, 0.3)';
-						}}
-						required
-					/>
-					<input
-						type="email"
-						name="email"
-						placeholder="Your Email"
-						value={formData.email}
-						onChange={handleInputChange}
-						style={inputStyle}
-						onFocus={(e) => {
-							e.target.style.borderColor = 'rgba(233, 233, 233, 0.6)';
-							e.target.style.boxShadow = '0 0 10px rgba(233, 233, 233, 0.2)';
-						}}
-						onBlur={(e) => {
-							e.target.style.borderColor = 'rgba(233, 233, 233, 0.3)';
-							e.target.style.boxShadow = '0 0 0 rgba(233, 233, 233, 0.3)';
-						}}
-						required
-					/>
-					<textarea
-						name="message"
-						placeholder="Your Message"
-						value={formData.message}
-						onChange={handleInputChange}
-						style={textareaStyle}
-						onFocus={(e) => {
-							e.target.style.borderColor = 'rgba(233, 233, 233, 0.6)';
-							e.target.style.boxShadow = '0 0 10px rgba(233, 233, 233, 0.2)';
-						}}
-						onBlur={(e) => {
-							e.target.style.borderColor = 'rgba(233, 233, 233, 0.3)';
-							e.target.style.boxShadow = '0 0 0 rgba(233, 233, 233, 0.3)';
-						}}
-						required
-					/>
-					<button
-						type="submit"
-						style={{
-							...buttonStyle,
-							opacity: isSubmitting ? 0.7 : 1,
-							cursor: isSubmitting ? 'not-allowed' : 'pointer',
-						}}
-						disabled={isSubmitting}
-						onMouseEnter={(e) => {
-							if (!isSubmitting) {
-								e.currentTarget.style.backgroundColor = 'rgba(233, 233, 233, 0.2)';
-								e.currentTarget.style.boxShadow = '0 0 15px rgba(233, 233, 233, 0.3)';
-							}
-						}}
-						onMouseLeave={(e) => {
-							if (!isSubmitting) {
-								e.currentTarget.style.backgroundColor = 'rgba(233, 233, 233, 0.1)';
-								e.currentTarget.style.boxShadow = 'none';
-							}
-						}}
-					>
-						{isSubmitting ? (
-							<span className="wave-text">
-								{Array.from('Sending...').map((char, index) => (
-									<span key={index}>{char === ' ' ? '\u00A0' : char}</span>
-								))}
-							</span>
-						) : (
-							'Send Message'
-						)}
-					</button>
-					{submitStatus === 'error' && (
-						<div style={{
-							color: '#f87171',
-							margin: '10px 0',
-							textAlign: 'center',
-							fontSize: '0.9rem',
-						}}>
-							✗ Failed to send message. Please try again.
-						</div>
-					)}
-					<button
-						type="button"
-						style={backButtonStyle}
-						onClick={handleBackClick}
-						onMouseEnter={(e) => {
-							e.currentTarget.style.borderColor = 'rgba(233, 233, 233, 0.7)';
-							e.currentTarget.style.backgroundColor = 'rgba(233, 233, 233, 0.1)';
-						}}
-						onMouseLeave={(e) => {
-							e.currentTarget.style.borderColor = 'rgba(233, 233, 233, 0.3)';
-							e.currentTarget.style.backgroundColor = 'transparent';
-						}}
-					>
-						<span style={{ transform: 'translateY(3px)' }}>✕</span>
-					</button>
-				</form>
-			
-			{showToast && (
-				<div className="toast">
-					Message sent successfully!
-				</div>
-			)}
-			
-			<Footer />
-		</main>
-	);
+	 return (
+	 		<main style={containerStyle}>
+	 			<Seo
+	 				title="Contact | Danny Nguyen Le"
+	 				description="Get in touch to ask questions, share ideas, or start a conversation."
+	 				canonical={`${SITE}/contact`}
+	 			/>
+	 			<Navbar />
+	 			<style>
+	 				{`
+	 					@keyframes wave {
+	 						0%, 60%, 100% {
+	 							transform: translateY(0);
+	 						}
+	 						30% {
+	 							transform: translateY(-8px);
+	 						}
+	 					}
+ 					
+	 					.wave-text span {
+	 						display: inline-block;
+	 						animation: wave 1.5s ease-in-out infinite;
+	 					}
+ 					
+	 					.wave-text span:nth-child(1) { animation-delay: 0s; }
+	 					.wave-text span:nth-child(2) { animation-delay: 0.1s; }
+	 					.wave-text span:nth-child(3) { animation-delay: 0.2s; }
+	 					.wave-text span:nth-child(4) { animation-delay: 0.3s; }
+	 					.wave-text span:nth-child(5) { animation-delay: 0.4s; }
+	 					.wave-text span:nth-child(6) { animation-delay: 0.5s; }
+	 					.wave-text span:nth-child(7) { animation-delay: 0.6s; }
+	 					.wave-text span:nth-child(8) { animation-delay: 0.7s; }
+	 					.wave-text span:nth-child(9) { animation-delay: 0.8s; }
+	 					.wave-text span:nth-child(10) { animation-delay: 0.9s; }
+	 				`}
+	 			</style>
+	 			<h1 style={titleStyle} onClick={handleEmailClick}>
+	 				hello@dvnny.no
+	 			</h1>
+	 			<form style={formStyle} onSubmit={handleSubmit}>
+	 					<input
+	 						type="text"
+	 						name="name"
+	 						placeholder="Your Name"
+	 						value={formData.name}
+	 						onChange={handleInputChange}
+	 						style={inputStyle}
+	 						onFocus={(e) => {
+	 							e.target.style.borderColor = 'rgba(233, 233, 233, 0.6)';
+	 							e.target.style.boxShadow = '0 0 10px rgba(233, 233, 233, 0.2)';
+	 						}}
+	 						onBlur={(e) => {
+	 							e.target.style.borderColor = 'rgba(233, 233, 233, 0.3)';
+	 							e.target.style.boxShadow = '0 0 0 rgba(233, 233, 233, 0.3)';
+	 						}}
+	 						required
+	 					/>
+	 					<input
+	 						type="email"
+	 						name="email"
+	 						placeholder="Your Email"
+	 						value={formData.email}
+	 						onChange={handleInputChange}
+	 						style={inputStyle}
+	 						onFocus={(e) => {
+	 							e.target.style.borderColor = 'rgba(233, 233, 233, 0.6)';
+	 							e.target.style.boxShadow = '0 0 10px rgba(233, 233, 233, 0.2)';
+	 						}}
+	 						onBlur={(e) => {
+	 							e.target.style.borderColor = 'rgba(233, 233, 233, 0.3)';
+	 							e.target.style.boxShadow = '0 0 0 rgba(233, 233, 233, 0.3)';
+	 						}}
+	 						required
+	 					/>
+	 					<textarea
+	 						name="message"
+	 						placeholder="Your Message"
+	 						value={formData.message}
+	 						onChange={handleInputChange}
+	 						style={textareaStyle}
+	 						onFocus={(e) => {
+	 							e.target.style.borderColor = 'rgba(233, 233, 233, 0.6)';
+	 							e.target.style.boxShadow = '0 0 10px rgba(233, 233, 233, 0.2)';
+	 						}}
+	 						onBlur={(e) => {
+	 							e.target.style.borderColor = 'rgba(233, 233, 233, 0.3)';
+	 							e.target.style.boxShadow = '0 0 0 rgba(233, 233, 233, 0.3)';
+	 						}}
+	 						required
+	 					/>
+	 					<button
+	 						type="submit"
+	 						style={{
+	 							...buttonStyle,
+	 							opacity: isSubmitting ? 0.7 : 1,
+	 							cursor: isSubmitting ? 'not-allowed' : 'pointer',
+	 						}}
+	 						disabled={isSubmitting}
+	 						onMouseEnter={(e) => {
+	 							if (!isSubmitting) {
+	 								e.currentTarget.style.backgroundColor = 'rgba(233, 233, 233, 0.2)';
+	 								e.currentTarget.style.boxShadow = '0 0 15px rgba(233, 233, 233, 0.3)';
+	 							}
+	 						}}
+	 						onMouseLeave={(e) => {
+	 							if (!isSubmitting) {
+	 								e.currentTarget.style.backgroundColor = 'rgba(233, 233, 233, 0.1)';
+	 								e.currentTarget.style.boxShadow = 'none';
+	 							}
+	 						}}
+	 					>
+	 						{isSubmitting ? (
+	 							<span className="wave-text">
+	 								{Array.from('Sending...').map((char, index) => (
+	 									<span key={index}>{char === ' ' ? '\u00A0' : char}</span>
+	 								))}
+	 							</span>
+	 						) : (
+	 							'Send Message'
+	 						)}
+	 					</button>
+	 					{submitStatus === 'error' && (
+	 						<div style={{
+	 							color: '#f87171',
+	 							margin: '10px 0',
+	 							textAlign: 'center',
+	 							fontSize: '0.9rem',
+	 						}}>
+	 							✗ Failed to send message. Please try again.
+	 						</div>
+	 					)}
+	 					<button
+	 						type="button"
+	 						style={backButtonStyle}
+	 						onClick={handleBackClick}
+	 						onMouseEnter={(e) => {
+	 							e.currentTarget.style.borderColor = 'rgba(233, 233, 233, 0.7)';
+	 							e.currentTarget.style.backgroundColor = 'rgba(233, 233, 233, 0.1)';
+	 						}}
+	 						onMouseLeave={(e) => {
+	 							e.currentTarget.style.borderColor = 'rgba(233, 233, 233, 0.3)';
+	 							e.currentTarget.style.backgroundColor = 'transparent';
+	 						}}
+	 					>
+	 						<span style={{ transform: 'translateY(3px)' }}>✕</span>
+	 					</button>
+	 				</form>
+	 			{showToast && (
+	 				<div className="toast">
+	 					Message sent successfully!
+	 				</div>
+	 			)}
+	 			<Footer />
+	 		</main>
+	 	);
 };
 
 export default Contact;
