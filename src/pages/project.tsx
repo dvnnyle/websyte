@@ -20,6 +20,13 @@ const projects = [
 		image: "/portfolio/app1/appPreviewPW.png",
 		link: "#",
 		status: "In Development"
+	},
+	{
+		title: "PureNorway Water",
+		description: "Concept design for new website for PureNorway Water",
+		image: "/portfolio/pureNorway/pureNorway.png",
+		link: "https://water.dvnny.no/",
+		status: "Concept"
 	}
 ];
 
@@ -66,6 +73,13 @@ const desktopWebApps = [
 		description: "Interactive mindmap and visualization platform",
 		image: "/portfolio/toumao/toumaoNew.png",
 		link: "https://tounao.dvnny.no/"
+	},
+	{
+		title: "PureNorway Water",
+		description: "Concept design for new website for PureNorway Water",
+		image: "/portfolio/pureNorway/pureNorway.png",
+		link: "https://water.dvnny.no/",
+		status: "Concept"
 	},
 	{
 		title: "Playworld Website",
