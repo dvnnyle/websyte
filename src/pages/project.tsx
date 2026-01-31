@@ -105,9 +105,18 @@ const desktopWebApps = [
 ];
 
 const ProjectPage = () => {
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(() => {
+		// Check if images were already preloaded in this session
+		return !sessionStorage.getItem('projectImagesLoaded');
+	});
 
 	useEffect(() => {
+		// Skip preloading if already done in this session
+		if (sessionStorage.getItem('projectImagesLoaded')) {
+			setLoading(false);
+			return;
+		}
+
 		// Preload all images
 		const allImages = [
 			...projects.map(p => p.image),
@@ -131,11 +140,13 @@ const ProjectPage = () => {
 
 		Promise.all(imagePromises).then(() => {
 			setLoading(false);
+			sessionStorage.setItem('projectImagesLoaded', 'true');
 		});
 
 		// Fallback: show content after 3s even if some images fail
 		const fallbackTimer = setTimeout(() => {
 			setLoading(false);
+			sessionStorage.setItem('projectImagesLoaded', 'true');
 		}, 3000);
 
 		return () => clearTimeout(fallbackTimer);
