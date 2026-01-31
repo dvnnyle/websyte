@@ -8,6 +8,7 @@ import About from './pages/about'
 import Work from './pages/work'
 import ProjectPage from './pages/project';
 import ITPro from './pages/itpro';
+import NotFound from './pages/notFound';
 
 function AppContent() {
   return (
@@ -25,6 +26,7 @@ function AppContent() {
         <Route path="/work" element={<Work />} />
         <Route path="/project" element={<ProjectPage />} />
         <Route path="/itpro" element={<ITPro />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
