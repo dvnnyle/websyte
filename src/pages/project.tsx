@@ -116,18 +116,13 @@ const ProjectPage = () => {
 			...practical.map(p => p.image)
 		];
 
-		let loadedCount = 0;
-		const totalImages = allImages.length;
-
 		const imagePromises = allImages.map(src => {
 			return new Promise((resolve) => {
 				const img = new Image();
 				img.onload = () => {
-					loadedCount++;
 					resolve(true);
 				};
 				img.onerror = () => {
-					loadedCount++;
 					resolve(false);
 				};
 				img.src = src;
