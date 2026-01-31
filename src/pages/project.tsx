@@ -3,6 +3,8 @@ import "./project.css";
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 import { useSeo } from '../components/Seo';
+import { useState, useEffect } from 'react';
+import ProjectCardSkeleton from '../components/ProjectCardSkeleton';
 
 const SITE = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
 
@@ -103,6 +105,16 @@ const desktopWebApps = [
 ];
 
 const ProjectPage = () => {
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		// Simulate loading time for images and content
+		const timer = setTimeout(() => {
+			setLoading(false);
+		}, 800);
+		return () => clearTimeout(timer);
+	}, []);
+
 	useSeo({
 		title: "Projects | Danny Nguyen Le",
 		description: "A closer look at a project — how it was built, what was learned, and the ideas behind the work.",
@@ -124,34 +136,42 @@ const ProjectPage = () => {
 					</div>
 					{/* Right column: Project grid (3 columns) */}
 					<div className="projects-grid projects-grid-single">
-						{projects.map((proj, idx) => (
-							<a
-								key={idx}
-								href={proj.link}
-								className="project-card"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<img
-									src={proj.image}
-									alt={proj.title}
-									className="project-image"
-								/>
-								{proj.status && (
-									<div className="project-status-pill">
-										{proj.status}
+						{loading ? (
+							<>
+								<ProjectCardSkeleton />
+								<ProjectCardSkeleton />
+								<ProjectCardSkeleton />
+							</>
+						) : (
+							projects.map((proj, idx) => (
+								<a
+									key={idx}
+									href={proj.link}
+									className="project-card"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<img
+										src={proj.image}
+										alt={proj.title}
+										className="project-image"
+									/>
+									{proj.status && (
+										<div className="project-status-pill">
+											{proj.status}
+										</div>
+									)}
+									<div className="project-overlay">
+										<h3 className="project-title">
+											{proj.title}
+										</h3>
+										<p className="project-description">
+											{proj.description}
+										</p>
 									</div>
-								)}
-								<div className="project-overlay">
-									<h3 className="project-title">
-										{proj.title}
-									</h3>
-									<p className="project-description">
-										{proj.description}
-									</p>
-								</div>
-							</a>
-						))}
+								</a>
+							))
+						)}
 					</div>
 				</div>
 			</section>
@@ -167,34 +187,45 @@ const ProjectPage = () => {
 						</p>
 					</div>
 					<div className="projects-grid projects-grid-single">
-						{desktopWebApps.map((proj, idx) => (
-							<a
-								key={idx}
-								href={proj.link}
-								className="project-card"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<img
-									src={proj.image}
-									alt={proj.title}
-									className="project-image"
-								/>
-								{proj.status && (
-									<div className="project-status-pill">
-										{proj.status}
+						{loading ? (
+							<>
+								<ProjectCardSkeleton />
+								<ProjectCardSkeleton />
+								<ProjectCardSkeleton />
+								<ProjectCardSkeleton />
+								<ProjectCardSkeleton />
+								<ProjectCardSkeleton />
+							</>
+						) : (
+							desktopWebApps.map((proj, idx) => (
+								<a
+									key={idx}
+									href={proj.link}
+									className="project-card"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<img
+										src={proj.image}
+										alt={proj.title}
+										className="project-image"
+									/>
+									{proj.status && (
+										<div className="project-status-pill">
+											{proj.status}
+										</div>
+									)}
+									<div className="project-overlay">
+										<h3 className="project-title">
+											{proj.title}
+										</h3>
+										<p className="project-description">
+											{proj.description}
+										</p>
 									</div>
-								)}
-								<div className="project-overlay">
-									<h3 className="project-title">
-										{proj.title}
-									</h3>
-									<p className="project-description">
-										{proj.description}
-									</p>
-								</div>
-							</a>
-						))}
+								</a>
+							))
+						)}
 					</div>
 				</div>
 			</section>
@@ -210,34 +241,42 @@ const ProjectPage = () => {
 						</p>
 					</div>
 					<div className="projects-grid projects-grid-single">
-						{appDevelopment.map((proj, idx) => (
-							<a
-								key={idx}
-								href={proj.link}
-								className="project-card"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<img
-									src={proj.image}
-									alt={proj.title}
-									className="project-image"
-								/>
-								{proj.status && (
-									<div className="project-status-pill">
-										{proj.status}
+						{loading ? (
+							<>
+								<ProjectCardSkeleton />
+								<ProjectCardSkeleton />
+								<ProjectCardSkeleton />
+							</>
+						) : (
+							appDevelopment.map((proj, idx) => (
+								<a
+									key={idx}
+									href={proj.link}
+									className="project-card"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<img
+										src={proj.image}
+										alt={proj.title}
+										className="project-image"
+									/>
+									{proj.status && (
+										<div className="project-status-pill">
+											{proj.status}
+										</div>
+									)}
+									<div className="project-overlay">
+										<h3 className="project-title">
+											{proj.title}
+										</h3>
+										<p className="project-description">
+											{proj.description}
+										</p>
 									</div>
-								)}
-								<div className="project-overlay">
-									<h3 className="project-title">
-										{proj.title}
-									</h3>
-									<p className="project-description">
-										{proj.description}
-									</p>
-								</div>
-							</a>
-						))}
+								</a>
+							))
+						)}
 					</div>
 				</div>
 			</section>
@@ -253,29 +292,33 @@ const ProjectPage = () => {
 						</p>
 					</div>
 					<div className="projects-grid projects-grid-single">
-						{practical.map((proj, idx) => (
-							<a
-								key={idx}
-								href={proj.link}
-								className="project-card"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<img
-									src={proj.image}
-									alt={proj.title}
-									className="project-image"
-								/>
-								<div className="project-overlay">
-									<h3 className="project-title">
-										{proj.title}
-									</h3>
-									<p className="project-description">
-										{proj.description}
-									</p>
-								</div>
-							</a>
-						))}
+						{loading ? (
+							<ProjectCardSkeleton />
+						) : (
+							practical.map((proj, idx) => (
+								<a
+									key={idx}
+									href={proj.link}
+									className="project-card"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<img
+										src={proj.image}
+										alt={proj.title}
+										className="project-image"
+									/>
+									<div className="project-overlay">
+										<h3 className="project-title">
+											{proj.title}
+										</h3>
+										<p className="project-description">
+											{proj.description}
+										</p>
+									</div>
+								</a>
+							))
+						)}
 					</div>
 				</div>
 			</section>
