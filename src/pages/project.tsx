@@ -108,11 +108,42 @@ const ProjectPage = () => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		// Simulate loading time for images and content
-		const timer = setTimeout(() => {
+		// Preload all images
+		const allImages = [
+			...projects.map(p => p.image),
+			...desktopWebApps.map(p => p.image),
+			...appDevelopment.map(p => p.image),
+			...practical.map(p => p.image)
+		];
+
+		let loadedCount = 0;
+		const totalImages = allImages.length;
+
+		const imagePromises = allImages.map(src => {
+			return new Promise((resolve) => {
+				const img = new Image();
+				img.onload = () => {
+					loadedCount++;
+					resolve(true);
+				};
+				img.onerror = () => {
+					loadedCount++;
+					resolve(false);
+				};
+				img.src = src;
+			});
+		});
+
+		Promise.all(imagePromises).then(() => {
 			setLoading(false);
-		}, 800);
-		return () => clearTimeout(timer);
+		});
+
+		// Fallback: show content after 3s even if some images fail
+		const fallbackTimer = setTimeout(() => {
+			setLoading(false);
+		}, 3000);
+
+		return () => clearTimeout(fallbackTimer);
 	}, []);
 
 	useSeo({

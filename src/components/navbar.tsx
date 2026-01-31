@@ -15,6 +15,11 @@ const defaultItems: NavItem[] = [
 	{ label: 'Contact', href: '/contact' },
 ];
 
+// Preload project page on hover
+const preloadProjectPage = () => {
+	import('../pages/project');
+};
+
 export const Navbar: React.FC<NavbarProps> = ({ 
 	items = defaultItems, 
 	className
@@ -82,6 +87,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 							onMouseEnter={(e) => {
 								e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
 								e.currentTarget.style.filter = 'brightness(105%)';
+								// Preload project page on hover
+								if (item.href === '/project') {
+									preloadProjectPage();
+								}
 							}}
 							onMouseLeave={(e) => {
 								e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
