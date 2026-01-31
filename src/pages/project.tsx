@@ -154,7 +154,8 @@ const ProjectPage = () => {
 									<img
 										src={proj.image}
 										alt={proj.title}
-										className="project-image"
+										className="project-image loaded"
+										onLoad={(e) => e.currentTarget.classList.add('loaded')}
 									/>
 									{proj.status && (
 										<div className="project-status-pill">
@@ -208,7 +209,8 @@ const ProjectPage = () => {
 									<img
 										src={proj.image}
 										alt={proj.title}
-										className="project-image"
+										className="project-image loaded"
+										onLoad={(e) => e.currentTarget.classList.add('loaded')}
 									/>
 									{proj.status && (
 										<div className="project-status-pill">
@@ -259,7 +261,8 @@ const ProjectPage = () => {
 									<img
 										src={proj.image}
 										alt={proj.title}
-										className="project-image"
+										className="project-image loaded"
+										onLoad={(e) => e.currentTarget.classList.add('loaded')}
 									/>
 									{proj.status && (
 										<div className="project-status-pill">
@@ -306,7 +309,8 @@ const ProjectPage = () => {
 									<img
 										src={proj.image}
 										alt={proj.title}
-										className="project-image"
+										className="project-image loaded"
+										onLoad={(e) => e.currentTarget.classList.add('loaded')}
 									/>
 									<div className="project-overlay">
 										<h3 className="project-title">

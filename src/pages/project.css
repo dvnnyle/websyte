@@ -9,6 +9,15 @@
 	}
 }
 
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
 .projects-section {
     
 	width: 100%;
@@ -122,7 +131,32 @@
 	cursor: pointer;
 	transition: transform 0.3s ease;
     	border-radius: 4px;
+	opacity: 0;
+	animation: fadeIn 0.6s ease-out forwards;
+}
 
+.project-card:nth-child(1) {
+	animation-delay: 0.1s;
+}
+
+.project-card:nth-child(2) {
+	animation-delay: 0.2s;
+}
+
+.project-card:nth-child(3) {
+	animation-delay: 0.3s;
+}
+
+.project-card:nth-child(4) {
+	animation-delay: 0.4s;
+}
+
+.project-card:nth-child(5) {
+	animation-delay: 0.5s;
+}
+
+.project-card:nth-child(6) {
+	animation-delay: 0.6s;
 }
 
 .project-card:hover {
@@ -136,9 +170,14 @@
 	object-fit: cover;
 	display: block;
 	filter: brightness(0.7);
-	transition: transform 0.4s ease, filter 0.3s ease;
+	transition: transform 0.4s ease, filter 0.3s ease, opacity 0.3s ease;
 	transform: scale(1);
 	border-radius: 4px;
+	opacity: 0;
+}
+
+.project-image.loaded {
+	opacity: 1;
 }
 
 .project-card:hover .project-image {
