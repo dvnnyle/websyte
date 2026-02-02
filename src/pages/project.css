@@ -54,7 +54,7 @@
 
 .projects-info-column {
 	flex: 0 0 400px;
-	padding-left: 4rem;
+	padding-left: 40px;
 	padding-top: 5rem;
 }
 
@@ -83,7 +83,7 @@
 	gap: 10px;
 	align-content: start;
 	padding-left: 2rem;
-	padding-right: 4rem;
+	padding-right: 40px;
 	padding-top: 3.5rem;
 	padding-bottom: 3.5rem;
 }

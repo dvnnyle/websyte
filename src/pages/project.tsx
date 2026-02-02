@@ -12,14 +12,14 @@ const projects = [
 	{
 		title: "Playworld Website",
 		description: "Design example",
-		image: "/portfolio/playworld/playworldPreview.png",
+		image: "/portfolio/playworld/pwsApp.png",
 		link: "https://coyote.dvnny.no/",
 		status: "In Development"
 	},
 	{
 		title: "Playworld PWA",
 		description: "Progressive web application",
-		image: "/portfolio/app1/appPreviewPW.png",
+		image: "/portfolio/playworld/pwsApp.png",
 		link: "#",
 		status: "In Development"
 	},
@@ -48,7 +48,7 @@ const appDevelopment = [
 	{
 		title: "Playworld PWA",
 		description: "Progressive web application",
-		image: "/portfolio/app1/appPreviewPW.png",
+		image: "/portfolio/playworld/pwsApp.png",
 		link: "#",
 		status: "In Development"
 	}
@@ -65,16 +65,17 @@ const practical = [
 
 const desktopWebApps = [
 	{
+		title: "Playworld Website",
+		description: "Design example",
+		image: "/portfolio/playworld/playworldPreview.png",
+		link: "https://coyote.dvnny.no/",
+		status: "In Development"
+	},
+	{
 		title: "Smite Pomodoro",
 		description: "Beautiful productivity timer with focus sessions and ambient features",
 		image: "/portfolio/smite/smitePomodoro.png",
 		link: "https://smite.dvnny.no"
-	},
-	{
-		title: "Toumao",
-		description: "Interactive mindmap and visualization platform",
-		image: "/portfolio/toumao/toumaoNew.png",
-		link: "https://tounao.dvnny.no/"
 	},
 	{
 		title: "PureNorway Water",
@@ -84,11 +85,10 @@ const desktopWebApps = [
 		status: "Concept"
 	},
 	{
-		title: "Playworld Website",
-		description: "Design example",
-		image: "/portfolio/playworld/playworldPreview.png",
-		link: "https://coyote.dvnny.no/",
-		status: "In Development"
+		title: "Scandish Website",
+		description: "Website for Scandish",
+		image: "/portfolio/scandish/scandishWeb.png",
+		link: "#"
 	},
 	{
 		title: "Mgeko",
@@ -97,10 +97,10 @@ const desktopWebApps = [
 		link: "https://mgeko.dvnny.no/"
 	},
 	{
-		title: "Scandish Website",
-		description: "Website for Scandish",
-		image: "/portfolio/scandish/scandishWeb.png",
-		link: "#"
+		title: "Toumao",
+		description: "Interactive mindmap and visualization platform",
+		image: "/portfolio/toumao/toumaoNew.png",
+		link: "https://tounao.dvnny.no/"
 	}
 ];
 
