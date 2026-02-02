@@ -12,7 +12,7 @@ const projects = [
 	{
 		title: "Playworld Website",
 		description: "Design example",
-		image: "/portfolio/playworld/pwsApp.png",
+		image: "/portfolio/playworld/playworldPreview.png",
 		link: "https://coyote.dvnny.no/",
 		status: "In Development"
 	},
