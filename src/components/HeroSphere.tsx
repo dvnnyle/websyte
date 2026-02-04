@@ -22,18 +22,9 @@ interface FragmentData {
   fadeInDelay: number;
 }
 
-const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => {
+const ExplodingSphere = ({ scrollRef, mobileYOffset, isMobile }: { scrollRef: React.MutableRefObject<number>, mobileYOffset: number, isMobile: boolean }) => {
   const groupRef = useRef<THREE.Group>(null);
   const fragmentsRef = useRef<THREE.Mesh[]>([]);
-  
-  // Mobildeteksjon for posisjonering
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const innerCount = 120;
   const outerCount = 60;
@@ -315,7 +306,7 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         floatIntensity={0}
         floatingRange={[0, 0]}
       >
-        <group ref={groupRef} position={[0, isMobile ? 1.2 : -0.2, 0]} scale={1.1}>
+        <group ref={groupRef} position={[0, isMobile ? mobileYOffset : -0.2, 0]} scale={1.1}>
           {fragments.map((frag, i) => (
           <mesh
             key={i}
@@ -348,13 +339,13 @@ const ExplodingSphere = ({ scrollRef }: { scrollRef: React.MutableRefObject<numb
         <ambientLight intensity={0.1} color="#703600" />
       </group>
       {/* Punktlys litt utenfor sentrum for å eliminere sentral radial - utenfor gruppe så den ikke roterer */}
-      <pointLight position={isMobile ? [0, 1.2, 0] : [0.1, -0.1, 0.2]} intensity={6} distance={20} decay={1.5} color="#510080" />
+      <pointLight position={isMobile ? [0, mobileYOffset, 0] : [0.1, -0.1, 0.2]} intensity={6} distance={20} decay={1.5} color="#510080" />
     </Float>
     </>
   );
 };
 
-const Scene = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => {
+const Scene = ({ scrollRef, mobileYOffset, isMobile }: { scrollRef: React.MutableRefObject<number>, mobileYOffset: number, isMobile: boolean }) => {
   return (
     <>
       <ambientLight intensity={0.12} />
@@ -362,7 +353,7 @@ const Scene = ({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) => 
       <directionalLight position={[-4, -5, -6]} intensity={0.15} color="#707070" castShadow />
       <Cloud position={[0, 0, -10]} scale={[8, 8, 8]} opacity={0.28} speed={0.35} color="#999999" segments={40} />
 
-      <ExplodingSphere scrollRef={scrollRef} />
+      <ExplodingSphere scrollRef={scrollRef} mobileYOffset={mobileYOffset} isMobile={isMobile} />
     </> 
   );
 };
@@ -372,8 +363,24 @@ export const HeroSphere = () => {
   
   // Mobildeteksjon for responsiv kamera
   const [isMobile, setIsMobile] = useState(false);
+  const [mobileYOffset, setMobileYOffset] = useState(0);
+  
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    const checkMobile = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const isMobileDevice = width <= 768;
+      setIsMobile(isMobileDevice);
+      
+      if (isMobileDevice) {
+        // Calculate Y offset based on viewport aspect ratio
+        const aspectRatio = height / width;
+        // For tall screens (like iPhone 14 Pro Max), move sphere down slightly
+        // For shorter screens (like landscape or iPad mini), move up more
+        const baseOffset = aspectRatio > 1.8 ? 0.3 : aspectRatio > 1.5 ? 0.6 : 1.0;
+        setMobileYOffset(baseOffset);
+      }
+    };
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -405,7 +412,7 @@ export const HeroSphere = () => {
         style={{ width: '100%', height: '100%', background: '#0a0a0a' }}
       >
         <fogExp2 attach="fog" args={["#0f0f0f", 0.01]} />
-        <Scene scrollRef={scrollRef} />
+        <Scene scrollRef={scrollRef} mobileYOffset={mobileYOffset} isMobile={isMobile} />
       </Canvas>
     </div>
   );
